@@ -1,6 +1,8 @@
+import { VarType } from "./ExecutionTrace";
 import { Expression } from "./Expression";
+import { RenderNode } from "./RenderNode";
 
-export class Literal<T> extends Expression<T> {
+export class Literal<T extends VarType> extends Expression<T> {
 
     value: T;
 
@@ -11,5 +13,10 @@ export class Literal<T> extends Expression<T> {
 
     evaluateInternal(): T {
         return this.value;
+    }
+
+    render(): RenderNode {
+        return new RenderNode()
+            .addLiteral(this.value);
     }
 }

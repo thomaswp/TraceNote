@@ -1,6 +1,7 @@
 import { ASTNode } from "./ASTNode";
 import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
+import { RenderNode } from "./RenderNode";
 
 export class Block extends ASTNode {
 
@@ -18,5 +19,10 @@ export class Block extends ASTNode {
 
     addToTrace(trace: ExecutionTrace): void {
         this.commands.forEach(c => c.addToTrace(trace));
+    }
+
+    render(): RenderNode {
+        return new RenderNode()
+            .addChildren(this.commands);
     }
 }

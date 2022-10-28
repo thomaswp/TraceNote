@@ -1,6 +1,7 @@
 import { Command } from "./Command";
 import { ExecutionTrace, VarType } from "./ExecutionTrace";
 import { Expression } from "./Expression";
+import { RenderNode } from "./RenderNode";
 
 export class SetVariable extends Command {
 
@@ -16,5 +17,10 @@ export class SetVariable extends Command {
     addToTrace(trace: ExecutionTrace): void {
         super.addToTrace(trace);
         trace.setVariable(this.name, this.value.evaluate(trace));
+    }
+
+    render(): RenderNode {
+        return new RenderNode()
+            .addSet(this.name, this.value);
     }
 }

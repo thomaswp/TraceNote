@@ -2,6 +2,7 @@ import { Block } from "./Block";
 import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
 import { Expression } from "./Expression";
+import { RenderNode } from "./RenderNode";
 
 export class Repeat extends Command {
 
@@ -22,5 +23,11 @@ export class Repeat extends Command {
             this.block.addToTrace(trace);
             trace.endIteration(this);
         }
+    }
+
+    render(): RenderNode {
+        return new RenderNode()
+            .addControl('Repeat', this.times)
+            .addChild(this.block);
     }
 }

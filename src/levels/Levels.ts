@@ -127,6 +127,10 @@ export function test() {
         console.log('Level', level.name);
         let code = level.getCode();
         console.log('Code', code);
+        let rendered = code.render();
+        console.log('Rendered', rendered);
+        console.log('Rendered String');
+        console.log(rendered.toString());
         let trace = new ExecutionTrace();
         code.addToTrace(trace);
         console.log('Trace', trace);
