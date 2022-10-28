@@ -1,10 +1,13 @@
 import * as Tone from 'tone'
 import { Sampler } from 'tone';
-import { SampleLibrary } from './SampleLibrary'
+import { SampleLibrary } from './audio/SampleLibrary'
+import { test } from './levels/Levels';
 
 console.log("!");
 
 window.onload = () => {
+
+    test();
 
     let button = document.createElement('button');
     button.innerHTML = "Play!";
