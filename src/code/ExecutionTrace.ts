@@ -1,6 +1,7 @@
 import { ASTNode } from "./ASTNode";
+import { Variable } from "./Variable";
 
-export type VarType = number;
+export type VarType = number | boolean;
 
 export class ExecutionTrace {
     data: ExecutionData[]
@@ -23,19 +24,19 @@ export class ExecutionTrace {
         // TODO
     }
 
-    getVariable(name: string): VarType {
-        if (!this.varMap.has(name)) {
-            console.error("Undefined variable!", name);
-            return 0;
+    getVariable<T extends VarType>(variable: Variable<T>): T {
+        if (!this.varMap.has(variable.name)) {
+            console.error("Undefined variable!", variable);
+            return <T>0;
         }
-        return this.varMap.get(name);
+        return <T>this.varMap.get(variable.name);
     }
 
-    setVariable(name: string, value: VarType) {
-        this.varMap.set(name, value);
+    setVariable<T extends VarType>(variable: Variable<T>, value: T) {
+        this.varMap.set(variable.name, value);
         this.data.push({
             type: 'UpdateVar',
-            name: name,
+            name: variable.name,
             value: value,
         } as UpdateVarData)
     }

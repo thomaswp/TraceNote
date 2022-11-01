@@ -23,6 +23,7 @@ export class Block extends ASTNode {
 
     render(): RenderNode {
         return new RenderNode()
+            .useVerticalLayout()
             .addChildren(this.commands);
     }
 }

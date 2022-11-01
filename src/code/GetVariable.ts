@@ -1,22 +1,23 @@
 import { ExecutionTrace, VarType } from "./ExecutionTrace";
 import { Expression } from "./Expression";
 import { RenderNode } from "./RenderNode";
+import { Variable } from "./Variable";
 
-export class GetVariable extends Expression<VarType> {
+export class GetVariable<T extends VarType> extends Expression<T> {
 
-    name: string;
+    variable: Variable<T>;
 
-    constructor(name: string) {
+    constructor(variable: Variable<T>) {
         super();
-        this.name = name;
+        this.variable = variable;
     }
 
-    evaluateInternal(trace: ExecutionTrace): VarType {
-        return trace.getVariable(this.name);
+    evaluateInternal(trace: ExecutionTrace): T {
+        return <T>trace.getVariable(this.variable);
     }
 
     render(): RenderNode {
         return new RenderNode()
-            .addVariable(this.name);
+            .addVariable(this.variable);
     }
 }

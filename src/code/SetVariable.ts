@@ -2,25 +2,26 @@ import { Command } from "./Command";
 import { ExecutionTrace, VarType } from "./ExecutionTrace";
 import { Expression } from "./Expression";
 import { RenderNode } from "./RenderNode";
+import { Variable } from "./Variable";
 
-export class SetVariable extends Command {
+export class SetVariable<T extends VarType> extends Command {
 
-    name: string;
-    value: Expression<VarType>;
+    variable: Variable<T>;
+    value: Expression<T>;
 
-    constructor(name: string, value: Expression<VarType>) {
+    constructor(name: Variable<T>, value: Expression<T>) {
         super();
-        this.name = name;
+        this.variable = name;
         this.value = value;
     }
 
     addToTrace(trace: ExecutionTrace): void {
         super.addToTrace(trace);
-        trace.setVariable(this.name, this.value.evaluate(trace));
+        trace.setVariable(this.variable, this.value.evaluate(trace));
     }
 
     render(): RenderNode {
         return new RenderNode()
-            .addSet(this.name, this.value);
+            .addSet(this.variable, this.value);
     }
 }

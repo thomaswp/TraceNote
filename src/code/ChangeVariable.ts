@@ -2,27 +2,28 @@ import { Command } from "./Command";
 import { ExecutionTrace, VarType } from "./ExecutionTrace";
 import { Expression } from "./Expression";
 import { RenderNode } from "./RenderNode";
+import { VarCategory, Variable } from "./Variable";
 
 export class ChangeVariable extends Command {
 
-    name: string;
-    change: Expression<VarType>;
+    variable: Variable<number>;
+    change: Expression<number>;
 
-    constructor(name: string, change: Expression<VarType>) {
+    constructor(variable: Variable<number>, change: Expression<number>) {
         super();
-        this.name = name;
+        this.variable = variable;
         this.change = change;
     }
 
     addToTrace(trace: ExecutionTrace): void {
         super.addToTrace(trace);
-        let value = trace.getVariable(this.name);
+        let value = trace.getVariable(this.variable);
         value += this.change.evaluate(trace);
-        trace.setVariable(this.name, value);
+        trace.setVariable(this.variable, value);
     }
 
     render(): RenderNode {
         return new RenderNode()
-            .addChange(this.name, this.change);
+            .addChange(this.variable, this.change);
     }
 }
