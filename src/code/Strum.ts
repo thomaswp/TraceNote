@@ -18,7 +18,7 @@ export class Strum extends Command {
     }
 
     render(): RenderNode {
-        return new RenderNode()
+        return new RenderNode(this)
             .addCall('Strum', this.root);
     }
 }

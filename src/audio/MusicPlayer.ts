@@ -7,7 +7,7 @@ export class MusicPlayer {
     beat = 0;
     tempo;
 
-    constructor(root: string, tempo: number = 2) {
+    constructor(root: string, tempo: number = 4) {
         this.keyFrequency = Tone.Frequency(root);
         this.tempo = tempo;
     }
@@ -25,9 +25,13 @@ export class MusicPlayer {
     playChord(chordNumber: number, beats: number) {
         let minors = [0, 1, 1, 0, 0, 1, 0];
         let root = this.chordNumberToHalfSteps(chordNumber);
-        let notes = [root, root + 4 - minors[chordNumber], root + 7];
-        console.log(notes);
-        this.playNotes(notes, beats);
+        let notes = [root, root + 4 - minors[chordNumber - 1], root + 7];
+        this.playNotes([root], beats / 2);
+        this.playNotes(notes, beats / 2);
+        // let sep = 0.15;
+        // this.playNotes([notes[0]], sep);
+        // this.playNotes([notes[1]], sep);
+        // this.playNotes([notes[2]], beats / 2 - sep * 2);
     }
 
     playNote(chordNumber: number, beats: number) {

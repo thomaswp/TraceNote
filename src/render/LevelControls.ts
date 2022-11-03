@@ -1,7 +1,7 @@
 import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Block } from '../code/Block';
-import { ExecutionTrace, PlayChordData, PlayNoteData } from '../code/ExecutionTrace';
+import { ExecutionTrace, PlayChordData, PlayNoteData, RunData } from '../code/ExecutionTrace';
 import { Level } from '../levels/Levels';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 import { AudioLoader } from '../audio/AudioLoader';
@@ -49,10 +49,13 @@ export class LevelControls extends LitElement {
             let player = new MusicPlayer("C3");
             this.trace.data.forEach(event => {
                 if (event instanceof PlayChordData) {
-                    player.playChord(event.root, 1);
+                    player.playChord(event.root, 4);
                 }
                 if (event instanceof PlayNoteData) {
                     player.playNote(event.note, 1);
+                }
+                if (event instanceof RunData) {
+                    document.getElementById(event.node.id).classList.add('running');
                 }
             });
         })

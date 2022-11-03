@@ -18,7 +18,7 @@ export class Pick extends Command {
     }
 
     render(): RenderNode {
-        return new RenderNode()
+        return new RenderNode(this)
             .addCall('Pick', this.note);
     }
 }

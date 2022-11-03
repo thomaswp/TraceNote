@@ -28,7 +28,7 @@ export class If extends Command {
     }
 
     render(): RenderNode {
-        let result = new RenderNode()
+        let result = new RenderNode(this)
             .addControl('If', this.condition)
             .addChild(this.thenBlock);
 

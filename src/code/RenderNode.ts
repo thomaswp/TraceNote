@@ -158,8 +158,14 @@ export enum Style {
 
 export class RenderNode implements Renderable {
 
+    parent: ASTNode;
+
     readonly children = [] as Renderable[];
     private verticalLayout = false;
+
+    constructor(parent: ASTNode) {
+        this.parent = parent;
+    }
 
     toString(tabs = '', addHTML = false): string {
         let content;
@@ -194,6 +200,7 @@ export class RenderNode implements Renderable {
 
     htmlWrap(content: string) {
         let span = document.createElement('span');
+        span.id = this.parent.id;
         span.innerHTML = content;
         span.classList.add('code');
         span.classList.add('node');

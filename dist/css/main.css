@@ -34,3 +34,7 @@
 .code.call {
     font-weight: bold;
 }
+
+.running {
+    background-color: yellow;
+}

@@ -17,7 +17,7 @@ export class GetVariable<T extends VarType> extends Expression<T> {
     }
 
     render(): RenderNode {
-        return new RenderNode()
+        return new RenderNode(this)
             .addVariable(this.variable);
     }
 }

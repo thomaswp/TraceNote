@@ -21,7 +21,7 @@ export class SetVariable<T extends VarType> extends Command {
     }
 
     render(): RenderNode {
-        return new RenderNode()
+        return new RenderNode(this)
             .addSet(this.variable, this.value);
     }
 }

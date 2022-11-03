@@ -24,7 +24,7 @@ levels.push(new class implements Level {
     getCode(): Block {
         return new Block()
             .addCommand(new Strum(new Literal(1)))
-            .addCommand(new Strum(new Literal(3)))
+            .addCommand(new Strum(new Literal(4)))
             .addCommand(new Strum(new Literal(5)))
             .addCommand(new Strum(new Literal(1)))
         ;
@@ -40,7 +40,7 @@ levels.push(new class implements Level {
             .addCommand(new Repeat(new NumberLiteral(4),
                 new Block()
                 .addCommand(new Strum(new Literal(1)))
-                .addCommand(new Strum(new Literal(3)))
+                .addCommand(new Strum(new Literal(4)))
                 .addCommand(new Strum(new Literal(5)))
                 .addCommand(new Strum(new Literal(1)))
             )

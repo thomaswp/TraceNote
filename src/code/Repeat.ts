@@ -26,7 +26,7 @@ export class Repeat extends Command {
     }
 
     render(): RenderNode {
-        return new RenderNode()
+        return new RenderNode(this)
             .addControl('Repeat', this.times)
             .addChild(this.block);
     }

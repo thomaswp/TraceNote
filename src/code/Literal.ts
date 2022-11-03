@@ -25,7 +25,7 @@ export class Literal<T extends VarType> extends Expression<T> {
     }
 
     render(): RenderNode {
-        return new RenderNode()
+        return new RenderNode(this)
             .addLiteral(this.value, this.type);
     }
 }
