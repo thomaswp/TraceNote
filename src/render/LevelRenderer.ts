@@ -1,5 +1,9 @@
 import { RenderNode, StyledText } from "../code/RenderNode";
 import { Level } from "../levels/Levels";
+import {LitElement, html, css, render} from 'lit';
+import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
+import "./LevelControls";
+import { LevelControls } from "./LevelControls";
 
 export class LevelRenderer {
 
@@ -10,37 +14,41 @@ export class LevelRenderer {
     }
 
     render() : HTMLElement {
+
         let code = this.level.getCode();
         let node = code.render();
-        let div = document.createElement('div');
-        div.innerHTML = node.toString('', true);
-        div.classList.add('code-container');
-        return div;
+
+        let c = html`
+            <div class="code-container">
+                <div class="code-content">${unsafeHTML(node.toString('', true))}</div>
+                <!-- <test-comp/> -->
+            </div>
+        `;
+
+        let container = document.createElement('div');
+        // render(c, container);
+        let lc = document.createElement('level-controls') as LevelControls;
+        lc.level = this.level;
+        container.appendChild(lc);
+
+
+        return container;
+
+
+        // let content = document.createElement('div');
+        // content.innerHTML = node.toString('', true);
+        // content.classList.add('code-content');
+
+        // let container = document.createElement('div');
+        // container.appendChild(content);
+        // container.classList.add('code-container');
+
+        // container.appendChild(document.createElement('test-comp'));
+
+        // let t = new TestComponent();
+        // let s = html`blah`;
+
+        // return container;
     }
-
-    // renderNode(node: RenderNode) : HTMLElement {
-    //     let contianer = document.createElement('div');
-    //     contianer.classList.add('code');
-    //     contianer.classList.add('node');
-    //     contianer.classList.toggle('vertical', node.hasVerticalLayout());
-    //     node.children.forEach(child => {
-    //         if (child instanceof StyledText) contianer.appendChild(this.renderText(child));
-    //         else if (child instanceof RenderNode) contianer.appendChild(this.renderNode(child));
-    //         else {
-    //             console.error('Unknown child', child);
-    //         }
-    //     });
-    //     return contianer;
-
-    // }
-
-    // renderText(text: StyledText) : HTMLElement {
-    //     let contianer = document.createElement('span');
-    //     contianer.innerText = text.content;
-    //     contianer.classList.add('code');
-    //     contianer.classList.add('text');
-    //     contianer.classList.add(text.style.toString());
-    //     return contianer;
-    // }
 
 }

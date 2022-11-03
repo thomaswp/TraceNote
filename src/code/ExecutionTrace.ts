@@ -34,52 +34,59 @@ export class ExecutionTrace {
 
     setVariable<T extends VarType>(variable: Variable<T>, value: T) {
         this.varMap.set(variable.name, value);
-        this.data.push({
-            type: 'UpdateVar',
-            name: variable.name,
-            value: value,
-        } as UpdateVarData)
+        this.data.push(new UpdateVarData(variable.name, value));
     }
 
     run(node: ASTNode) {
-        this.data.push({
-            type: 'Run',
-            node: node,
-        } as RunData);
+        this.data.push(new RunData(node));
     }
 
     strum(root: number) {
-        this.data.push({
-            type: 'PlayChord',
-            root: root,
-        } as PlayChordData);
+        this.data.push(new PlayChordData(root));
     }
 
     pick(note: number) {
-        this.data.push({
-            type: 'PlayNote',
-            note: note,
-        } as PlayNoteData);
+        this.data.push(new PlayNoteData(note));
     }
 }
 
-export interface ExecutionData {
-    type: string;
+export abstract class ExecutionData {
 }
 
-export interface RunData extends ExecutionData {
+export class RunData extends ExecutionData {
     node: ASTNode;
+
+    constructor(node: ASTNode) {
+        super();
+        this.node = node;
+    }
 }
 
-export interface PlayChordData extends ExecutionData {
+export class PlayChordData extends ExecutionData {
     root: number;
+
+    constructor(root: number) {
+        super();
+        this.root = root;
+    }
 }
 
-export interface PlayNoteData extends ExecutionData {
+export class PlayNoteData extends ExecutionData {
     note: number;
+
+    constructor(note: number) {
+        super();
+        this.note = note;
+    }
 }
 
-export interface UpdateVarData extends ExecutionData {
+export class UpdateVarData extends ExecutionData {
     name: string;
     value: VarType;
+
+    constructor(name: string, value: VarType) {
+        super();
+        this.name = name;
+        this.value = value;
+    }
 }

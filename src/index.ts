@@ -4,9 +4,12 @@ import { SampleLibrary } from './audio/SampleLibrary'
 import { levels, test } from './levels/Levels';
 import { LevelRenderer } from './render/LevelRenderer';
 import * as bootstrap from 'bootstrap';
+import { AudioLoader } from './audio/AudioLoader';
+
+AudioLoader.loadAll();
 
 window.onload = () => {
-    test();
+    // test();
 
     levels.forEach(level => {
         let div = new LevelRenderer(level).render();
