@@ -19,6 +19,7 @@ export class ChangeVariable extends Command {
         super.addToTrace(trace);
         let value = trace.getVariable(this.variable);
         value += this.change.evaluate(trace);
+        if (this.variable.type == VarCategory.Bool) value %= 2
         trace.setVariable(this.variable, value);
     }
 

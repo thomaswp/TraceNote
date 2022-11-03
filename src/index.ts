@@ -6,9 +6,9 @@ import { LevelRenderer } from './render/LevelRenderer';
 import * as bootstrap from 'bootstrap';
 import { AudioLoader } from './audio/AudioLoader';
 
-AudioLoader.loadAll();
 
 window.onload = () => {
+    // AudioLoader.loadAll();
     // test();
 
     levels.forEach(level => {

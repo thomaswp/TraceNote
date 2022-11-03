@@ -1,10 +1,11 @@
 import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Block } from '../code/Block';
-import { ExecutionTrace, PlayChordData } from '../code/ExecutionTrace';
+import { ExecutionTrace, PlayChordData, PlayNoteData } from '../code/ExecutionTrace';
 import { Level } from '../levels/Levels';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
-import { Chord } from '../audio/Chord';
+import { AudioLoader } from '../audio/AudioLoader';
+import { MusicPlayer } from '../audio/MusicPlayer';
 
 @customElement('level-controls')
 export class LevelControls extends LitElement {
@@ -43,11 +44,17 @@ export class LevelControls extends LitElement {
     }
 
     private play() {
-        let player = new Chord("C3");
-        this.trace.data.forEach(event => {
-            if (event instanceof PlayChordData) {
-                player.play(event.root, 1);
-            }
+        console.log(this.trace);
+        AudioLoader.loadAll().then(() => {
+            let player = new MusicPlayer("C3");
+            this.trace.data.forEach(event => {
+                if (event instanceof PlayChordData) {
+                    player.playChord(event.root, 1);
+                }
+                if (event instanceof PlayNoteData) {
+                    player.playNote(event.note, 1);
+                }
+            });
         })
     }
 

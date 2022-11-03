@@ -8,6 +8,7 @@ export class AudioLoader {
     static pianoSampler: Sampler;
 
     static async loadAll() {
+        if (this.isLoaded) return;
         await Tone.start();
 
         SampleLibrary.minify = true;
@@ -24,13 +25,17 @@ export class AudioLoader {
             // piano.triggerAttack("G3");
         }
 
-        // passing a single instrument name loads one instrument and returns the tone.js object
-        this.pianoSampler = SampleLibrary.load({
-            instruments: "piano",
-            onload: () => {
-                this.pianoSampler.toDestination();
-                this.isLoaded = true;
-            }
+        return new Promise<void>((resolve, reject) => {
+            // passing a single instrument name loads one instrument and returns the tone.js object
+            this.pianoSampler = SampleLibrary.load({
+                instruments: "guitar-acoustic",
+                onload: () => {
+                    this.pianoSampler.toDestination();
+                    this.isLoaded = true;
+                    resolve();
+                }
+            });
+
         });
     }
 }

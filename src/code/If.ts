@@ -19,7 +19,8 @@ export class If extends Command {
 
     addToTrace(trace: ExecutionTrace): void {
         super.addToTrace(trace);
-        if (this.condition.evaluate(trace)) {
+        let test = this.condition.evaluate(trace);
+        if (test) {
             this.thenBlock.addToTrace(trace);
         } else if (this.elseBlock) {
             this.elseBlock.addToTrace(trace);

@@ -151,7 +151,7 @@ levels.push(new class implements Level {
 
     getCode(): Block {
         let block = new Block()
-            .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(true)))
+            .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(false)))
             .addCommand(new Strum(new Literal(1)))
             .addCommand(new If(new GetVariable(BoolGreenVar),
                 new Block().addCommand(new Strum(new Literal(4))),
