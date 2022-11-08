@@ -47,18 +47,37 @@ export class LevelControls extends LitElement {
         console.log(this.trace);
         AudioLoader.loadAll().then(() => {
             let player = new MusicPlayer("C3");
+
+            let highlighted = [] as HTMLElement[];
+            function clearHighlights() {
+                setTimeout(() => {
+                    highlighted.forEach(h => h.classList.remove('running'));
+                    highlighted = [];
+                }, player.beat * 250);
+            }
+            function addHighlight(id) {
+                let node = document.getElementById(id);
+                setTimeout(() => {
+                    node.classList.add('running');
+                    highlighted.push(node);
+                }, player.beat * 250);
+            }
+
             this.trace.data.forEach(event => {
                 if (event instanceof PlayChordData) {
                     player.playChord(event.root, 4);
+                    clearHighlights();
                 }
                 if (event instanceof PlayNoteData) {
                     player.playNote(event.note, 1);
+                    clearHighlights();
                 }
                 if (event instanceof RunData) {
-                    console.log(event.node, event.node.id);
-                    document.getElementById(event.node.id).classList.add('running');
+                    // console.log(event.node, event.node.id);
+                    addHighlight(event.node.id);
                 }
             });
+            clearHighlights();
         })
     }
 

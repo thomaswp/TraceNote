@@ -35,6 +35,10 @@
     font-weight: bold;
 }
 
-.running {
+.code.node {
+    background-color: white;
+}
+
+.code.running {
     background-color: yellow;
 }

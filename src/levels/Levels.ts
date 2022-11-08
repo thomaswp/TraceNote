@@ -171,9 +171,10 @@ levels.push(new class implements Level {
             .addCommand(new Repeat(new NumberLiteral(2), new Block()
                 .addCommand(new Strum(new Literal(1)))
                 .addCommand(new If(new GetVariable(BoolGreenVar),
+                    new Block().addCommand(new Strum(new Literal(5))),
                     new Block().addCommand(new Strum(new Literal(4))),
-                    new Block().addCommand(new Strum(new Literal(5)))
                 )).addCommand(new Strum(new Literal(1)))
+                .addCommand(new Strum(new Literal(1)))
                 .addCommand(new ChangeVariable(BoolGreenVar, new NumberLiteral(1)))
             ));
 

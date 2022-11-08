@@ -6,10 +6,12 @@ export class MusicPlayer {
     keyFrequency: Tone.FrequencyClass;
     beat = 0;
     tempo;
+    start: number;
 
     constructor(root: string, tempo: number = 4) {
         this.keyFrequency = Tone.Frequency(root);
         this.tempo = tempo;
+        this.start = Tone.now();
     }
 
     chordNumberToHalfSteps(chordNumber: number) {
@@ -44,7 +46,7 @@ export class MusicPlayer {
         let sampler = AudioLoader.pianoSampler;
         let frequencies = this.keyFrequency.harmonize(notes).map(f => f.toFrequency());
         // console.log(frequencies);
-        const now = Tone.now();
+        const now = this.start;
         sampler.triggerAttackRelease(frequencies, "8n", now + this.beat / this.tempo);
         this.beat += beats;
     }
