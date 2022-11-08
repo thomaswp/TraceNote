@@ -9,12 +9,27 @@ export interface Renderable {
     hasVerticalLayout(): boolean;
 }
 
+abstract class SpanRenderable implements Renderable {
+
+    createSpan() {
+        let span = document.createElement('span');
+        span.classList.add('code');
+        return span;
+    }
+
+    hasVerticalLayout(): boolean {
+        return false;
+    }
+
+}
+
 // TODO: Could definitely dediplicate some code w/ these classes...
-export class StyledText implements Renderable {
+export class StyledText extends SpanRenderable {
     content: string;
     style: Style;
 
     constructor(content: string, style: Style) {
+        super();
         this.content = content;
         this.style = style;
     }
@@ -24,27 +39,22 @@ export class StyledText implements Renderable {
         return this.content;
     }
 
-    hasVerticalLayout(): boolean {
-        return false;
-    }
-
-
     htmlWrap(content: string) {
-        let span = document.createElement('span');
+        let span = this.createSpan();
         span.innerHTML = content;
-        span.classList.add('code');
         span.classList.add('text');
         span.classList.add(this.style.toString());
         return span.outerHTML;
     }
 }
 
-export class VariableLayout implements Renderable {
+export class VariableLayout extends SpanRenderable {
     name: string;
     color: string;
     type: string;
 
     constructor(variable: Variable<any>) {
+        super();
         this.name = variable.name;
         this.color = variable.color;
         this.type = variable.type;
@@ -52,7 +62,7 @@ export class VariableLayout implements Renderable {
 
     toString(tabs: string, addHTML: boolean) {
         if (!addHTML) return this.name;
-        let span = document.createElement('span');
+        let span = this.createSpan();
         const map = {
             'green_note': '\u{1F7E2}',
             'green_bool': '\u{1F7E9}',
@@ -60,88 +70,73 @@ export class VariableLayout implements Renderable {
         let key =  this.color + '_' + this.type;
         if (!map[key]) console.error('Unknown key', key);
         span.innerHTML = map[key];
-        span.classList.add('code');
         span.classList.add('variable');
         return span.outerHTML;
 
     }
-
-    hasVerticalLayout(): boolean {
-        return false;
-    }
 }
 
-export class RotationLayout implements Renderable {
-    value: number
+abstract class LiteralRenderable<T> extends SpanRenderable {
+    value: T;
+    classes: string[];
 
-    constructor(value: number) {
+    constructor(value: T, ...classes: string[]) {
+        super();
         this.value = value;
+        this.classes = classes;
     }
+
+    abstract getInnerHTML(): string;
 
     toString(tabs: string, addHTML: boolean) {
         if (!addHTML) return "" + this.value;
-        let span = document.createElement('span');
+        let span = this.createSpan();
+        span.innerHTML = this.getInnerHTML();
+        span.classList.add('literal');
+        this.classes.forEach(c => span.classList.add(c));
+        return span.outerHTML;
+    }
+}
+
+export class RotationLayout extends LiteralRenderable<number> {
+
+    constructor(value: number) {
+        super(value, 'number');
+    }
+
+    getInnerHTML(): string {
         const chars = ['\u{2192}', '\u{2198}', '\u{2193}', '\u{2199}', '\u{2190}', '\u{2196}', '\u{2191}', '\u{2197}'];
         let key = (this.value - 1) % chars.length;
         if (!chars[key]) console.error('Unknown number value', this.value);
-        span.innerHTML = chars[key];
-        span.classList.add('code');
-        span.classList.add('literal');
-        span.classList.add('number');
-        return span.outerHTML;
-
-    }
-
-    hasVerticalLayout(): boolean {
-        return false;
+        return chars[key];
     }
 }
 
-export class BooleanLayout implements Renderable {
-    value: boolean;
+export class BooleanLayout extends LiteralRenderable<boolean> {
 
     constructor(value: boolean) {
-        this.value = value;
+        super(value, 'boolean');
     }
 
-    toString(tabs: string, addHTML: boolean) {
-        if (!addHTML) return "" + this.value;
-        let span = document.createElement('span');
-        span.innerHTML = this.value ? '\u{2611}' : '\u{2612}'
-        span.classList.add('code');
-        span.classList.add('literal');
-        span.classList.add('boolean');
-        return span.outerHTML;
+    getInnerHTML(): string {
+        return this.value ? '\u{2611}' : '\u{2612}'
 
-    }
-
-    hasVerticalLayout(): boolean {
-        return false;
     }
 }
 
-export class RotationChangeLayout implements Renderable {
-    value: number;
+export class RotationChangeLayout extends LiteralRenderable<number> {
 
     constructor(value: number) {
-        this.value = value;
+        super(value, 'change');
     }
 
-    toString(tabs: string, addHTML: boolean) {
-        if (!addHTML) return " += " + this.value;
-        let span = document.createElement('span');
+    getInnerHTML(): string {
+        let text = '';
         let char = this.value > 0 ? '\u{2B6E}' : '\u{27F2}'
         for (let i = 0; i < Math.abs(this.value); i++) {
-            span.innerHTML += char;
+            text += char;
         }
-        span.classList.add('code');
-        span.classList.add('change');
-        return span.outerHTML;
-
-    }
-
-    hasVerticalLayout(): boolean {
-        return false;
+        return text;
     }
 }
 
@@ -286,7 +281,9 @@ export class RenderNode implements Renderable {
     addChange(variable: Variable<any>, change: ASTNode) {
         this.addRenderable(new VariableLayout(variable));
         if (change instanceof Literal) {
-            this.addRenderable(new RotationChangeLayout(change.value));
+            let amount = new RenderNode(change);
+            amount.addRenderable(new RotationChangeLayout(change.value));
+            this.addRenderable(amount);
         } else {
             // TODO: This rendering actually depends on HTML vs not..
             console.error('Unsure how to render change.');

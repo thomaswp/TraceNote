@@ -55,6 +55,7 @@ export class LevelControls extends LitElement {
                     player.playNote(event.note, 1);
                 }
                 if (event instanceof RunData) {
+                    console.log(event.node, event.node.id);
                     document.getElementById(event.node.id).classList.add('running');
                 }
             });
