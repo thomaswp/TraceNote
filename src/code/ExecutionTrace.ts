@@ -51,6 +51,9 @@ export class ExecutionTrace {
 }
 
 export abstract class ExecutionData {
+    isBlocking(): boolean {
+        return false;
+    }
 }
 
 export class RunData extends ExecutionData {
@@ -69,6 +72,10 @@ export class PlayChordData extends ExecutionData {
         super();
         this.root = root;
     }
+
+    isBlocking(): boolean {
+        return true;
+    }
 }
 
 export class PlayNoteData extends ExecutionData {
@@ -77,6 +84,10 @@ export class PlayNoteData extends ExecutionData {
     constructor(note: number) {
         super();
         this.note = note;
+    }
+
+    isBlocking(): boolean {
+        return true;
     }
 }
 

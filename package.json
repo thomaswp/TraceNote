@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
+    "joymap": "^2.2.4",
     "lit": "^2.4.0",
     "tone": "^14.7.77",
     "uuid": "^9.0.0"

@@ -4,14 +4,20 @@ import { AudioLoader } from "./AudioLoader";
 export class MusicPlayer {
 
     keyFrequency: Tone.FrequencyClass;
-    beat = 0;
     tempo;
-    start: number;
+    nextReady: number;
 
     constructor(root: string, tempo: number = 4) {
         this.keyFrequency = Tone.Frequency(root);
         this.tempo = tempo;
-        this.start = Tone.now();
+        this.nextReady = Tone.now();
+    }
+
+    whenReady(callback: () => void) {
+        let now = Tone.now();
+        let until = Math.max(0, this.nextReady - now);
+        console.log(now, until);
+        setTimeout(callback, until * 1000);
     }
 
     chordNumberToHalfSteps(chordNumber: number) {
@@ -22,6 +28,17 @@ export class MusicPlayer {
         let intervals = [0, 2, 4, 5, 7, 9, 11];
         return intervals[chordNumber] + octaves * 12;
 
+    }
+
+    playSqueal() {
+        this.playNotes([0, 1, 2, 3, 4], 0.25);
+    }
+
+    playSuccess() {
+        let notes = [0, 4, 7, 5, 9, 14, 12]
+        notes.forEach(n => {
+            this.playNotes([n], 0.7);
+        });
     }
 
     playChord(chordNumber: number, beats: number) {
@@ -41,13 +58,20 @@ export class MusicPlayer {
         this.playNotes([halfSteps], beats);
     }
 
-    protected playNotes(notes: number[], beats: number) {
+    protected playNotes(notes: number[], beats: number) : Promise<void> {
         if (!AudioLoader.isLoaded) return;
         let sampler = AudioLoader.pianoSampler;
         let frequencies = this.keyFrequency.harmonize(notes).map(f => f.toFrequency());
         // console.log(frequencies);
-        const now = this.start;
-        sampler.triggerAttackRelease(frequencies, "8n", now + this.beat / this.tempo);
-        this.beat += beats;
+        // Either start now
+        const start = Math.max(this.nextReady, Tone.now());
+        sampler.triggerAttackRelease(frequencies, "8n", start);
+        this.nextReady = start + beats / this.tempo;
+
+        // return new Promise((resolve) => {
+        //     setTimeout(() => {
+
+        //     }, );
+        // });
     }
 }
