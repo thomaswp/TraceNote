@@ -39,6 +39,7 @@ function stickToNumber(value: number[]) {
 export class Input {
 
     static strum = new Event<StrumArgs>();
+    static pick = new Event<StrumArgs>();
     static leftStickMove = new Event<LeftStickArgs>();
 
     private static module: QueryModule;
@@ -56,6 +57,7 @@ export class Input {
 
     private static update() {
         const a = this.module.getButton('A');
+        const x = this.module.getButton('X');
         const leftStick = this.module.getStick('L');
         if (leftStick.justChanged) {
             const [x, y] = leftStick.value;
@@ -66,8 +68,13 @@ export class Input {
         }
         if (a.pressed && a.justChanged) {
             const dir = stickToNumber(leftStick.value);
-            console.log(leftStick.value, dir);
+            // console.log(leftStick.value, dir);
             this.strum.trigger({dir: dir});
+        }
+        if (x.pressed && x.justChanged) {
+            const dir = stickToNumber(leftStick.value);
+            // console.log(leftStick.value, dir);
+            this.pick.trigger({dir: dir});
         }
     }
 }

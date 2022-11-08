@@ -68,6 +68,7 @@ export class LevelControls extends LitElement {
 
         const finish = () => {
             Input.strum.remove(callback);
+            Input.pick.remove(callback);
             setTimeout(() => {
                 this.player.playSuccess();
             }, 500);
@@ -88,8 +89,8 @@ export class LevelControls extends LitElement {
 
         callback = (data: StrumArgs) => {
             let next = blockingList[0][0];
-            if (next instanceof PlayChordData) {
-                if (data.dir == next.root) {
+            if (next instanceof PlayChordData || next instanceof PlayNoteData) {
+                if (data.dir == next.note) {
                     this.play(blockingList[0][1]);
                     blockingList.splice(0, 1);
                     checkFinished();
@@ -102,6 +103,7 @@ export class LevelControls extends LitElement {
             }
         }
         Input.strum.add(callback);
+        Input.pick.add(callback);
         checkFinished();
     }
 
@@ -143,7 +145,7 @@ export class LevelControls extends LitElement {
 
         data.forEach(event => {
             if (event instanceof PlayChordData) {
-                player.playChord(event.root, 4);
+                player.playChord(event.note, 4);
                 clearHighlights();
             }
             if (event instanceof PlayNoteData) {

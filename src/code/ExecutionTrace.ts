@@ -66,11 +66,11 @@ export class RunData extends ExecutionData {
 }
 
 export class PlayChordData extends ExecutionData {
-    root: number;
+    note: number;
 
     constructor(root: number) {
         super();
-        this.root = root;
+        this.note = root;
     }
 
     isBlocking(): boolean {
