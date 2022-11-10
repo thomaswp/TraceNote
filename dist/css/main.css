@@ -42,3 +42,23 @@
 .code.running {
     background-color: yellow;
 }
+
+
+stick-display {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+html, body, main-display {
+    height: 100%;
+}
+
+.main-container {
+    height: 100%;
+}
+
+.levels {
+    overflow-y: auto;
+    height: 100%;
+}
