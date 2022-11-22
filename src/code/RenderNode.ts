@@ -166,7 +166,8 @@ export class RenderNode implements Renderable {
         let content;
         if (this.hasVerticalLayout()) {
             let nextTabs = '  ' + tabs;
-            content = this.children.map(r => r.toString(nextTabs, addHTML)).join('\n' + tabs);
+            // Nested vertical blocks shouldn't double-indent
+            content = this.children.map(r => r.toString(r.hasVerticalLayout() ? tabs : nextTabs, addHTML)).join('\n' + tabs);
         } else {
             let lastVertical = false;
             content = this.children.map((r, index) => {
@@ -267,6 +268,11 @@ export class RenderNode implements Renderable {
         return this.addCallLike(text, Style.Call, true, args);
     }
 
+    addFunctionDef(name: string, ...args: ASTNode[]) {
+        this.addText('Function ', Style.Control)
+        return this.addCallLike(name, Style.Call, true, args);
+    }
+
     addVariable(variable: Variable<any>): RenderNode {
         return this.addRenderable(new VariableLayout(variable));
     }
@@ -291,5 +297,9 @@ export class RenderNode implements Renderable {
             this.addChild(change);
         }
         return this;
+    }
+
+    addNewline(): RenderNode {
+        return this.addText('\n', Style.Syntax);
     }
 }

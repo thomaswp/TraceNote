@@ -1,27 +1,36 @@
 import { Block } from "../code/Block";
 import { ChangeVariable } from "../code/ChangeVariable";
 import { ExecutionTrace } from "../code/ExecutionTrace";
+import { FunctionCall } from "../code/FunctionCall";
+import { FunctionDefinition } from "../code/FunctionDefinition";
 import { GetVariable } from "../code/GetVariable";
 import { If } from "../code/If";
 import { BooleanLiteral, Literal, NumberLiteral } from "../code/Literal";
 import { Pick } from "../code/Pick";
+import { Program } from "../code/Program";
 import { Repeat } from "../code/Repeat";
 import { SetVariable } from "../code/SetVariable";
 import { Strum } from "../code/Strum";
-import { BoolGreenVar, NoteGreenVar } from "../code/Variable";
+import { BoolGreenVar, NoteGreenVar, Variable } from "../code/Variable";
 
-export interface Level {
+export abstract class Level {
 
     name: string;
-    getCode(): Block;
+    abstract getMain(): Block;
+    addFunctions(program: Program) { }
+    getCode(): Program {
+        let p = new Program(this.getMain(), []);
+        this.addFunctions(p);
+        return p;
+    }
 }
 
 export const levels = [] as Level[];
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
     name = "Strum Basics";
 
-    getCode(): Block {
+    getMain(): Block {
         return new Block()
             .addCommand(new Strum(new Literal(1)))
             .addCommand(new Strum(new Literal(4)))
@@ -31,11 +40,11 @@ levels.push(new class implements Level {
     }
 })
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Basic Repeat";
 
-    getCode(): Block {
+    getMain(): Block {
         return new Block()
             .addCommand(new Repeat(new NumberLiteral(4),
                 new Block()
@@ -48,11 +57,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Nested Repeat";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block()
             .addCommand(new Repeat(new NumberLiteral(4), new Block()
                 .addCommand(new Strum(new Literal(1)))
@@ -66,11 +75,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Half Scale 1";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block();
         for (let note = 1; note <= 4; note++) {
             block.addCommand(new SetVariable(NoteGreenVar, new Literal(note)));
@@ -80,11 +89,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Half Scale 2";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block();
         block.addCommand(new SetVariable(NoteGreenVar, new Literal(1)));
         block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
@@ -96,11 +105,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Arpeggio 2";
 
-    getCode(): Block {
+    getMain(): Block {
         return new Block()
             .addCommand(new SetVariable(NoteGreenVar, new Literal(1)))
             .addCommand(new Pick(new GetVariable(NoteGreenVar)))
@@ -114,11 +123,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Half Scale Down";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block();
         block.addCommand(new SetVariable(NoteGreenVar, new Literal(4)));
         block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
@@ -130,11 +139,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Basic If";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block()
             .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(true)))
             .addCommand(new Strum(new Literal(1)))
@@ -145,11 +154,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "Basic If/Else";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block()
             .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(false)))
             .addCommand(new Strum(new Literal(1)))
@@ -161,11 +170,11 @@ levels.push(new class implements Level {
     }
 });
 
-levels.push(new class implements Level {
+levels.push(new class extends Level {
 
     name = "If in Repeat";
 
-    getCode(): Block {
+    getMain(): Block {
         let block = new Block()
             .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(true)))
             .addCommand(new Repeat(new NumberLiteral(2), new Block()
@@ -182,11 +191,36 @@ levels.push(new class implements Level {
     }
 });
 
+levels.push(new class extends Level {
+    name = "Function Test";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new FunctionCall('test', new Literal(1)))
+            .addCommand(new FunctionCall('test', new Literal(4)))
+            .addCommand(new FunctionCall('test', new Literal(5)))
+            .addCommand(new FunctionCall('test', new Literal(1)))
+        ;
+    }
+
+    addFunctions(program: Program): void {
+        let def = new FunctionDefinition('test', [
+            NoteGreenVar,
+        ], new Block()
+            .addCommand(new Strum(new GetVariable(NoteGreenVar)))
+            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(1)))
+            .addCommand(new Strum(new GetVariable(NoteGreenVar)))
+        )
+        program.functions.push(def);
+    }
+})
+
+
 
 export function test() {
     levels.forEach(level => {
         console.log('Level', level.name);
-        let code = level.getCode();
+        let code = level.getMain();
         console.log('Code', code);
         let rendered = code.render();
         console.log('Rendered', rendered);

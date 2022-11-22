@@ -1,4 +1,5 @@
 import { ASTNode } from "./ASTNode";
+import { FunctionDefinition } from "./FunctionDefinition";
 import { Variable } from "./Variable";
 
 export type VarType = number | boolean;
@@ -6,6 +7,7 @@ export type VarType = number | boolean;
 export class ExecutionTrace {
     data: ExecutionData[]
     varMap: Map<string, VarType>;
+    functionMap: Map<string, FunctionDefinition>;
 
     constructor() {
         this.clear();
@@ -14,6 +16,7 @@ export class ExecutionTrace {
     clear() {
         this.data = [];
         this.varMap = new Map();
+        this.functionMap = new Map();
     }
 
     startIteration(node: ASTNode, i: number) {
@@ -35,6 +38,18 @@ export class ExecutionTrace {
     setVariable<T extends VarType>(variable: Variable<T>, value: T) {
         this.varMap.set(variable.name, value);
         this.data.push(new UpdateVarData(variable.name, value));
+    }
+
+    defineFunction(def: FunctionDefinition) {
+        this.functionMap.set(def.name, def);
+    }
+
+    getFunction(name: string) {
+        if (!this.functionMap.has(name)) {
+            console.error("Undefined function!", name);
+            return null;
+        }
+        return this.functionMap.get(name);
     }
 
     run(node: ASTNode) {

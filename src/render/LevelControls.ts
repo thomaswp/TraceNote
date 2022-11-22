@@ -7,6 +7,7 @@ import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 import { AudioLoader } from '../audio/AudioLoader';
 import { MusicPlayer } from '../audio/MusicPlayer';
 import { Input, StrumArgs } from '../input/Input';
+import { Program } from '../code/Program';
 
 @customElement('level-controls')
 export class LevelControls extends LitElement {
@@ -25,7 +26,7 @@ export class LevelControls extends LitElement {
     };
 
     private _level: Level;
-    private code: Block;
+    private code: Program;
     private codeHTML = '';
     private name = '';
     private trace: ExecutionTrace;

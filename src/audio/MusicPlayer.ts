@@ -16,7 +16,7 @@ export class MusicPlayer {
     whenReady(callback: () => void) {
         let now = Tone.now();
         let until = Math.max(0, this.nextReady - now);
-        console.log(now, until);
+        // console.log(now, until);
         setTimeout(callback, until * 1000);
     }
 

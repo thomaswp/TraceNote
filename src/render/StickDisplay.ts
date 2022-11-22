@@ -61,7 +61,7 @@ export class StickDisplay extends LitElement {
         super.connectedCallback();
         Input.leftStickMove.add(data => {
             this.data = data;
-            console.log(data);
+            // console.log(data);
         }, this);
     }
 

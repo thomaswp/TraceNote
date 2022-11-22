@@ -1,10 +1,15 @@
 import { ASTNode } from "./ASTNode";
+import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
 
-export abstract class Expression<T> extends ASTNode {
+export abstract class Expression<T> extends Command {
+
+    addToTrace(trace: ExecutionTrace): void {
+        this.evaluate(trace);
+    }
 
     evaluate(trace: ExecutionTrace): T {
-        this.addToTrace(trace);
+        super.addToTrace(trace);
         return this.evaluateInternal(trace);
     }
 
