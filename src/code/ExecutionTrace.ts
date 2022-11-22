@@ -6,6 +6,7 @@ export type VarType = number | boolean;
 
 export class ExecutionTrace {
     data: ExecutionData[]
+    variables: Variable<any>[] = [];
     varMap: Map<string, VarType>;
     functionMap: Map<string, FunctionDefinition>;
 
@@ -36,6 +37,9 @@ export class ExecutionTrace {
     }
 
     setVariable<T extends VarType>(variable: Variable<T>, value: T) {
+        if (!this.varMap.has(variable.name)) {
+            this.variables.push(variable);
+        }
         this.varMap.set(variable.name, value);
         this.data.push(new UpdateVarData(variable.name, value));
     }

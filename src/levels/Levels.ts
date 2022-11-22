@@ -215,6 +215,32 @@ levels.push(new class extends Level {
     }
 })
 
+levels.push(new class extends Level {
+
+    name = "Many Arpeggio";
+    arp = 'Arpeggio'
+
+    override getMain(): Block {
+        return new Block()
+            .addCommand(new FunctionCall(this.arp, new Literal(1)))
+            .addCommand(new FunctionCall(this.arp, new Literal(2)))
+            .addCommand(new FunctionCall(this.arp, new Literal(3)))
+            .addCommand(new FunctionCall(this.arp, new Literal(4)))
+    }
+
+    override addFunctions(program: Program) {
+        program.functions.push(new FunctionDefinition(this.arp, [NoteGreenVar], new Block()
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(2)))
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(2)))
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(3)))
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+        ))
+    }
+});
+
 
 
 export function test() {

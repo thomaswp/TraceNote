@@ -1,13 +1,14 @@
 import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Block } from '../code/Block';
-import { ExecutionData, ExecutionTrace, PlayChordData, PlayNoteData, RunData } from '../code/ExecutionTrace';
+import { ExecutionData, ExecutionTrace, PlayChordData, PlayNoteData, RunData, UpdateVarData } from '../code/ExecutionTrace';
 import { Level } from '../levels/Levels';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 import { AudioLoader } from '../audio/AudioLoader';
 import { MusicPlayer } from '../audio/MusicPlayer';
 import { Input, StrumArgs } from '../input/Input';
 import { Program } from '../code/Program';
+import { VariableDisplay } from './VariableDisplay';
 
 @customElement('level-controls')
 export class LevelControls extends LitElement {
@@ -35,6 +36,8 @@ export class LevelControls extends LitElement {
     private player: MusicPlayer;
     private playing = false;
 
+    private varDisplay: VariableDisplay;
+
     createRenderRoot() {
         return this;
     }
@@ -44,13 +47,20 @@ export class LevelControls extends LitElement {
     <div class="code-container">
         <h2>${this.name}</h2>
         <div class="code-content">${unsafeHTML(this.codeHTML)}</div>
+        <variable-display id="var-display" .variables=${[...this.trace.variables]}></variable-display>
         <button class="btn btn-primary" @click="${(this.start)}">Start</button>
         <button class="btn btn-primary" @click="${() => this.play(this.trace.data)}">Play</button>
     </div>
     `
     }
 
+    private init() {
+        this.varDisplay = this.renderRoot.querySelector('variable-display') as VariableDisplay;
+        this.varDisplay.init();
+    }
+
     private start() {
+        this.init();
         let blockingList = [] as ([ExecutionData, ExecutionData[]])[];
         let currentList = [] as ExecutionData[];
 
@@ -91,7 +101,7 @@ export class LevelControls extends LitElement {
         callback = (data: StrumArgs) => {
             let next = blockingList[0][0];
             if (next instanceof PlayChordData || next instanceof PlayNoteData) {
-                if (data.dir == next.note) {
+                if ((data.dir - 1) % 8 == (next.note - 1) % 8) {
                     this.play(blockingList[0][1]);
                     blockingList.splice(0, 1);
                     checkFinished();
@@ -109,6 +119,7 @@ export class LevelControls extends LitElement {
     }
 
     private play(data: ExecutionData[]) {
+        this.init();
         this.playbackQueue.push(...data);
         if (this.player) {
             this.tryStartPlayback();
@@ -156,6 +167,11 @@ export class LevelControls extends LitElement {
             if (event instanceof RunData) {
                 // console.log(event.node, event.node.id);
                 addHighlight(event.node.id);
+            }
+            if (event instanceof UpdateVarData) {
+                player.whenReady(() => {
+                    this.varDisplay.updateVariable(event);
+                });
             }
         });
 
