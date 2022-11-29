@@ -65,6 +65,7 @@ export class VariableLayout extends SpanRenderable {
         let span = this.createSpan();
         const map = {
             'green_note': '\u{1F7E2}',
+            'blue_note': '\u{1F535}',
             'green_bool': '\u{1F7E9}',
         }
         let key =  this.color + '_' + this.type;
@@ -252,8 +253,8 @@ export class RenderNode implements Renderable {
         this.addText('(', Style.Syntax);
         let first = true;
         args.forEach(a => {
-            this.addChild(a);
             if (!first) this.addText(',', Style.Syntax);
+            this.addChild(a);
             first = false;
         });
         this.addText(')', Style.Syntax);

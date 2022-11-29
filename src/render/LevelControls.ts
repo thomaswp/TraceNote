@@ -161,7 +161,7 @@ export class LevelControls extends LitElement {
                 clearHighlights();
             }
             if (event instanceof PlayNoteData) {
-                player.playNote(event.note, 1);
+                player.playNote(event.note, event.duration);
                 clearHighlights();
             }
             if (event instanceof RunData) {

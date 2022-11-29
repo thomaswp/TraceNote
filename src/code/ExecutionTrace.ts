@@ -64,8 +64,8 @@ export class ExecutionTrace {
         this.data.push(new PlayChordData(root));
     }
 
-    pick(note: number) {
-        this.data.push(new PlayNoteData(note));
+    pick(note: number, duration: number) {
+        this.data.push(new PlayNoteData(note, duration));
     }
 }
 
@@ -99,10 +99,12 @@ export class PlayChordData extends ExecutionData {
 
 export class PlayNoteData extends ExecutionData {
     note: number;
+    duration: number;
 
-    constructor(note: number) {
+    constructor(note: number, duration: number) {
         super();
         this.note = note;
+        this.duration = duration;
     }
 
     isBlocking(): boolean {
