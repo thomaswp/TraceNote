@@ -29,11 +29,13 @@ export class FunctionDefinition extends ASTNode {
             return;
         }
         for (let i = 0; i < this.parameters.length; i++) {
-            // TODO: Add scope
+            // TODO: Scope
             // console.log('setting: ', this.parameters[i], args[i])
             trace.setVariable(this.parameters[i], args[i]);
         }
         this.definition.addToTrace(trace);
+        // Unset variables
+        this.parameters.forEach(p => trace.setVariable(p, null));
         // TODO: Add return
         return null;
     }

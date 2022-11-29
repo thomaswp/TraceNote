@@ -49,7 +49,7 @@ export class LevelControls extends LitElement {
         <div class="code-content">${unsafeHTML(this.codeHTML)}</div>
         <variable-display id="var-display" .variables=${[...this.trace.variables]}></variable-display>
         <button class="btn btn-primary" @click="${(this.start)}">Start</button>
-        <button class="btn btn-primary" @click="${() => this.play(this.trace.data)}">Play</button>
+        <button class="btn btn-primary" @click="${() => this.playAll()}">Play</button>
     </div>
     `
     }
@@ -118,8 +118,12 @@ export class LevelControls extends LitElement {
         checkFinished();
     }
 
-    private play(data: ExecutionData[]) {
+    private playAll() {
         this.init();
+        this.play(this.trace.data);
+    }
+
+    private play(data: ExecutionData[]) {
         this.playbackQueue.push(...data);
         if (this.player) {
             this.tryStartPlayback();

@@ -27,65 +27,6 @@ export abstract class Level {
 
 export const levels = [] as Level[];
 
-levels.push(new class extends Level {
-    name = "Swallowtail Jib";
-
-    BaDaDa = (() => {
-        return new FunctionDefinition('BaDaDa', [NoteGreenVar, NoteBlueVar], new Block()
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new Pick(new GetVariable(NoteBlueVar)))
-            .addCommand(new Pick(new GetVariable(NoteBlueVar)))
-        );
-    })();
-
-    Down3 = (() => {
-        return new FunctionDefinition('Down3', [NoteGreenVar], new Block()
-            .addCommand(new Repeat(new Literal(3, LiteralType.Number), new Block()
-                .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-                .addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1, LiteralType.RotationChange)))
-            ))
-        );
-    })();
-
-    DaBaDa = (() => {
-        return new FunctionDefinition('DaBaDa', [NoteGreenVar], new Block()
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1, LiteralType.RotationChange)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(1, LiteralType.RotationChange)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-        );
-    })();
-
-    override getMain(): Block {
-        return new Block()
-            .addCommand(new SetVariable(BoolGreenVar, new Literal(false, LiteralType.Boolean)))
-            .addCommand(new Repeat(new Literal(2, LiteralType.Number), new Block()
-                .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
-                .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(6), new Literal(2)))
-                .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
-                .addCommand(new If(new GetVariable(BoolGreenVar), new Block()
-                    .addCommand(new Pick(new Literal(6), 2))
-                    .addCommand(new Pick(new Literal(7)))
-                , new Block()
-                    .addCommand(new FunctionCall(this.Down3.name, new Literal(6)))
-                    .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(3), new Literal(1)))
-                    .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(5), new Literal(1)))
-                ))
-                .addCommand(new FunctionCall(this.DaBaDa.name, new Literal(8)))
-                .addCommand(new FunctionCall(this.Down3.name, new Literal(5)))
-                .addCommand(new If(new GetVariable(BoolGreenVar), new Block()
-                    .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
-                    .addCommand(new Pick(new Literal(2), 3))
-                ))
-                .addCommand(new SetVariable(BoolGreenVar, new Literal(true, LiteralType.Boolean)))
-            ))
-    }
-
-    override addFunctions(program: Program) {
-        program.functions.push(this.BaDaDa, this.Down3, this.DaBaDa);
-    }
-})
 
 levels.push(new class extends Level {
     name = "Strum Basics";
@@ -301,6 +242,66 @@ levels.push(new class extends Level {
     }
 });
 
+
+levels.push(new class extends Level {
+    name = "Swallowtail Jig";
+
+    BaDaDa = (() => {
+        return new FunctionDefinition('BaDaDa', [NoteGreenVar, NoteBlueVar], new Block()
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new Pick(new GetVariable(NoteBlueVar)))
+            .addCommand(new Pick(new GetVariable(NoteBlueVar)))
+        );
+    })();
+
+    Down3 = (() => {
+        return new FunctionDefinition('Down3', [NoteGreenVar], new Block()
+            .addCommand(new Repeat(new Literal(3, LiteralType.Number), new Block()
+                .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+                .addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1, LiteralType.RotationChange)))
+            ))
+        );
+    })();
+
+    DaBaDa = (() => {
+        return new FunctionDefinition('DaBaDa', [NoteGreenVar], new Block()
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1, LiteralType.RotationChange)))
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(1, LiteralType.RotationChange)))
+            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+        );
+    })();
+
+    override getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(BoolGreenVar, new Literal(false, LiteralType.Boolean)))
+            .addCommand(new Repeat(new Literal(2, LiteralType.Number), new Block()
+                .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
+                .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(6), new Literal(2)))
+                .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
+                .addCommand(new If(new GetVariable(BoolGreenVar), new Block()
+                    .addCommand(new Pick(new Literal(6), 2))
+                    .addCommand(new Pick(new Literal(7)))
+                , new Block()
+                    .addCommand(new FunctionCall(this.Down3.name, new Literal(6)))
+                    .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(3), new Literal(1)))
+                    .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(5), new Literal(1)))
+                ))
+                .addCommand(new FunctionCall(this.DaBaDa.name, new Literal(8)))
+                .addCommand(new FunctionCall(this.Down3.name, new Literal(5)))
+                .addCommand(new If(new GetVariable(BoolGreenVar), new Block()
+                    .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
+                    .addCommand(new Pick(new Literal(2), 3))
+                ))
+                .addCommand(new SetVariable(BoolGreenVar, new Literal(true, LiteralType.Boolean)))
+            ))
+    }
+
+    override addFunctions(program: Program) {
+        program.functions.push(this.BaDaDa, this.Down3, this.DaBaDa);
+    }
+})
 
 
 export function test() {
