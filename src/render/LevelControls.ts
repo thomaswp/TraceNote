@@ -54,13 +54,13 @@ export class LevelControls extends LitElement {
     `
     }
 
-    private init() {
+    private reset() {
         this.varDisplay = this.renderRoot.querySelector('variable-display') as VariableDisplay;
         this.varDisplay.init();
     }
 
     private start() {
-        this.init();
+        this.reset();
         let blockingList = [] as ([ExecutionData, ExecutionData[]])[];
         let currentList = [] as ExecutionData[];
 
@@ -82,6 +82,7 @@ export class LevelControls extends LitElement {
             Input.pick.remove(callback);
             setTimeout(() => {
                 this.player.playSuccess();
+                this.reset();
             }, 500);
         }
 
@@ -119,19 +120,25 @@ export class LevelControls extends LitElement {
     }
 
     private playAll() {
-        this.init();
-        this.play(this.trace.data);
+        this.reset();
+        this.play(this.trace.data, true);
     }
 
-    private play(data: ExecutionData[]) {
+    private play(data: ExecutionData[], reset = false) {
         this.playbackQueue.push(...data);
         if (this.player) {
             this.tryStartPlayback();
+            if (reset) {
+                this.player.whenReady(() => this.reset());
+            }
             return;
         }
         AudioLoader.loadAll().then(() => {
             this.player = new MusicPlayer("C3");
             this.tryStartPlayback();
+            if (reset) {
+                this.player.whenReady(() => this.reset());
+            }
         })
     }
 

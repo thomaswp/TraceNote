@@ -6,7 +6,7 @@ import {styleMap} from 'lit/directives/style-map.js';
 import { levels } from '../levels/Levels';
 import { LevelControls } from './LevelControls';
 import { StickDisplay } from './StickDisplay';
-import { VariableDisplay } from './VariableDisplay';
+import { ArrowDisplay, VariableDisplay } from './VariableDisplay';
 
 @customElement('main-display')
 export class MainDisplay extends LitElement {
