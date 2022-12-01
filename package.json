@@ -16,7 +16,9 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.2",
+    "bootstrap-icons": "^1.10.2",
     "joymap": "^2.2.4",
     "lit": "^2.4.0",
     "tone": "^14.7.77",

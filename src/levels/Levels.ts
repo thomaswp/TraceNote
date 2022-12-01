@@ -16,6 +16,7 @@ import { BoolGreenVar, NoteBlueVar, NoteGreenVar, Variable } from "../code/Varia
 export abstract class Level {
 
     name: string;
+    category: string;
     abstract getMain(): Block;
     addFunctions(program: Program) { }
     getCode(): Program {
@@ -30,6 +31,7 @@ export const levels = [] as Level[];
 
 levels.push(new class extends Level {
     name = "Strum Basics";
+    category = "Basics";
 
     getMain(): Block {
         return new Block()
@@ -44,6 +46,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Basic Repeat";
+    category = "Repeat";
 
     getMain(): Block {
         return new Block()
@@ -61,6 +64,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Nested Repeat";
+    category = "Repeat";
 
     getMain(): Block {
         let block = new Block()
@@ -79,6 +83,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Half Scale 1";
+    category = "Variable Basics";
 
     getMain(): Block {
         let block = new Block();
@@ -93,6 +98,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Half Scale 2";
+    category = "Variable Basics";
 
     getMain(): Block {
         let block = new Block();
@@ -109,6 +115,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Arpeggio 2";
+    category = "Variable Basics";
 
     getMain(): Block {
         return new Block()
@@ -127,6 +134,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Half Scale Down";
+    category = "Variable Basics";
 
     getMain(): Block {
         let block = new Block();
@@ -143,6 +151,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Basic If";
+    category = "Conditional Basics";
 
     getMain(): Block {
         let block = new Block()
@@ -158,6 +167,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Basic If/Else";
+    category = "Conditional Basics";
 
     getMain(): Block {
         let block = new Block()
@@ -174,6 +184,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "If in Repeat";
+    category = "Conditional Basics";
 
     getMain(): Block {
         let block = new Block()
@@ -194,6 +205,7 @@ levels.push(new class extends Level {
 
 levels.push(new class extends Level {
     name = "Function Test";
+    category = "Functions";
 
     getMain(): Block {
         return new Block()
@@ -219,6 +231,7 @@ levels.push(new class extends Level {
 levels.push(new class extends Level {
 
     name = "Many Arpeggio";
+    category = "Functions";
     arp = 'Arpeggio'
 
     override getMain(): Block {
@@ -245,6 +258,7 @@ levels.push(new class extends Level {
 
 levels.push(new class extends Level {
     name = "Swallowtail Jig";
+    category = "Tunes";
 
     BaDaDa = (() => {
         return new FunctionDefinition('BaDaDa', [NoteGreenVar, NoteBlueVar], new Block()
@@ -303,18 +317,5 @@ levels.push(new class extends Level {
     }
 })
 
-
-export function test() {
-    levels.forEach(level => {
-        console.log('Level', level.name);
-        let code = level.getMain();
-        console.log('Code', code);
-        let rendered = code.render();
-        console.log('Rendered', rendered);
-        console.log('Rendered String');
-        console.log(rendered.toString());
-        let trace = new ExecutionTrace();
-        code.addToTrace(trace);
-        console.log('Trace', trace);
-    })
-}
+export const levelCategories = levels.map(l => l.category).filter((v, i, a) => a.indexOf(v) === i);
+export const levelMap = new Map(levelCategories.map(cat => [cat, levels.filter(l => l.category == cat)]));

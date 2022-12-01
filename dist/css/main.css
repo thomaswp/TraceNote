@@ -62,3 +62,17 @@ html, body, main-display {
     overflow-y: auto;
     height: 100%;
 }
+
+.level-layout {
+    display: flex;
+    margin: 10px;
+}
+
+.code-content {
+    display: inline-block;
+    min-width: 25%;
+}
+
+.info-panel-right {
+    display: inline-block;
+}

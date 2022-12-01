@@ -31,6 +31,8 @@ export class AudioLoader {
                 instruments: "guitar-acoustic",
                 onload: () => {
                     this.pianoSampler.toDestination();
+                    // this.pianoSampler.sync();
+                    // Tone.Transport.start();
                     this.isLoaded = true;
                     resolve();
                 }

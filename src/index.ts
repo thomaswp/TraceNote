@@ -7,6 +7,9 @@ import { StickDisplay } from './render/StickDisplay';
 
 window.onload = () => {
 
+    // Have to access bootstrap of it gets tree-shaken
+    bootstrap.Tooltip;
+
     new MainDisplay();
     document.body.appendChild(document.createElement('main-display'));
 

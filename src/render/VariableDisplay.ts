@@ -43,10 +43,10 @@ export class VariableDisplay extends LitElement {
 
     render() {
         return html`
-    <div>
-        <p>Variables:</p>
+    <div style=${styleMap({display: this.variables.length == 0 ? 'none': 'inherit'})}>
         <table class="table table-bordered" style="width: inherit;">
-            <tr>${this.variables.map(v => unsafeHTML('<th>' + new VariableLayout(v).toString('', true) + '</th>'))}</tr>
+            <caption style="text-align: center">Variables</caption>
+            <tr>${this.variables.map(v => unsafeHTML('<th style="text-align: center;">' + new VariableLayout(v).toString('', true) + '</th>'))}</tr>
             <tr>${this.values.map((v, index) => this.getVariable(index))}</tr>
         </table>
     </div>
@@ -81,7 +81,7 @@ export class ArrowDisplay extends LitElement {
         }
 
         .hidden {
-            visibility: hidden; 
+            visibility: hidden;
         }
     `
 
@@ -112,7 +112,7 @@ export class BooleanDisplay extends LitElement {
         }
 
         .hidden {
-            visibility: hidden; 
+            visibility: hidden;
         }
 
         p {

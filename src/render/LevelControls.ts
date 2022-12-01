@@ -46,15 +46,20 @@ export class LevelControls extends LitElement {
         return html`
     <div class="code-container">
         <h2>${this.name}</h2>
-        <div class="code-content">${unsafeHTML(this.codeHTML)}</div>
-        <variable-display id="var-display" .variables=${[...this.trace.variables]}></variable-display>
         <button class="btn btn-primary" @click="${(this.start)}">Start</button>
         <button class="btn btn-primary" @click="${() => this.playAll()}">Play</button>
+        <div class="level-layout">
+            <div class="code-content">${unsafeHTML(this.codeHTML)}</div>
+            <div class="info-panel-right">
+                <variable-display id="var-display" .variables=${[...this.trace.variables]}></variable-display>
+            </div>
+        </div>
     </div>
     `
     }
 
     private reset() {
+        this.stop();
         this.varDisplay = this.renderRoot.querySelector('variable-display') as VariableDisplay;
         this.varDisplay.init();
     }
@@ -119,9 +124,20 @@ export class LevelControls extends LitElement {
         checkFinished();
     }
 
+    override disconnectedCallback(): void {
+        this.stop();
+    }
+
     private playAll() {
         this.reset();
         this.play(this.trace.data, true);
+    }
+
+    private stop() {
+        this.playbackQueue = [];
+        if (this.player) {
+            this.player.stop();
+        }
     }
 
     private play(data: ExecutionData[], reset = false) {

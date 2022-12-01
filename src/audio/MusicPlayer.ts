@@ -10,7 +10,17 @@ export class MusicPlayer {
     constructor(root: string, tempo: number = 4) {
         this.keyFrequency = Tone.Frequency(root);
         this.tempo = tempo;
-        this.nextReady = Tone.now();
+        console.log(Tone.now(), Tone.Transport.now());
+        this.nextReady = Tone.Transport.now();
+    }
+
+    stop() {
+        // TODO: This doesn't work b/c it's not bound to the transport
+        // but binding to the transport creates timing issues
+        AudioLoader.pianoSampler.releaseAll();
+        Tone.Transport.cancel();
+        Tone.Transport.stop();
+        // TODO: reset nextReady to now
     }
 
     whenReady(callback: () => void) {
