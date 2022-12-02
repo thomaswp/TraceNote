@@ -4,6 +4,7 @@ import { ExecutionTrace } from "../code/ExecutionTrace";
 import { ForEachLoop } from "../code/ForEachLoop";
 import { FunctionCall } from "../code/FunctionCall";
 import { FunctionDefinition } from "../code/FunctionDefinition";
+import { GetListItem } from "../code/GetListItem";
 import { GetVariable } from "../code/GetVariable";
 import { If } from "../code/If";
 import { ListExpression } from "../code/ListExpression";
@@ -37,12 +38,26 @@ levels.push(new class extends Level {
     getMain(): Block {
         return new Block()
             .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 3])))
+            .addCommand(new Strum(new GetListItem(List1Var, 1)))
+            .addCommand(new Strum(new GetListItem(List1Var, 2)))
+            .addCommand(new Strum(new GetListItem(List1Var, 3)))
+        ;
+    }
+});
+
+
+levels.push(new class extends Level {
+    name = "List Loop";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
             .addCommand(new ForEachLoop(new ListExpression([3, 2, 1]), Note1Var, new Block()
                 .addCommand(new Pick(Note1Var))
             ))
         ;
     }
-})
+});
 
 levels.push(new class extends Level {
     name = "Strum Basics";
