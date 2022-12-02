@@ -27,6 +27,9 @@ export class LevelControls extends LitElement {
     };
     get level() { return this._level; }
 
+    @state()
+    private tracing = false;
+
     private _level: Level;
     private code: Program;
     private codeHTML = '';
@@ -47,8 +50,8 @@ export class LevelControls extends LitElement {
         return html`
     <div class="code-container">
         <h2>${this.level.category}: ${this.name}</h2>
-        <button class="btn btn-primary" @click="${(this.start)}">Start</button>
-        <button class="btn btn-primary" @click="${() => this.playAll()}">Play</button>
+        <button class="btn btn-primary" @click="${(this.start)}" ?disabled=${this.playing || this.tracing}>Start</button>
+        <button class="btn btn-primary" @click="${() => this.playAll()}" ?disabled=${this.playing || this.tracing}>Play</button>
         <div class="level-layout">
             <div class="code-content">${unsafeHTML(this.codeHTML)}</div>
             <div class="info-panel-right">
@@ -66,8 +69,8 @@ export class LevelControls extends LitElement {
     }
 
     private start() {
-        console.log("!!");
         this.reset();
+        this.tracing = true;
         let blockingList = [] as ([ExecutionData, ExecutionData[]])[];
         let currentList = [] as ExecutionData[];
 
@@ -88,8 +91,12 @@ export class LevelControls extends LitElement {
             Input.strum.removeAll(this);
             Input.pick.removeAll(this);
             setTimeout(() => {
-                this.player.playSuccess();
-                this.reset();
+                this.player.whenReady(() => {
+                    this.player.playSuccess();
+                    this.player.whenReady(() => {
+                        this.reset();
+                    });
+                })
             }, 500);
         }
 
@@ -146,6 +153,8 @@ export class LevelControls extends LitElement {
         Input.strum.removeAll(this);
         Input.pick.removeAll(this);
         this.playbackQueue = [];
+        this.tracing = false;
+        this.playing = false;
         if (this.player) {
             this.player.stop();
         }
