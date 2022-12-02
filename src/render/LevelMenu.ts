@@ -8,6 +8,9 @@ import { Level, levelCategories, levelMap, levels } from '../levels/Levels';
 @customElement('level-menu')
 export class LevelMenu extends LitElement {
 
+    @property()
+    selectedLevel: Level;
+
     createRenderRoot() {
         return this;
     }
@@ -31,15 +34,23 @@ export class LevelMenu extends LitElement {
         ${levelCategories.map(cat => {
             let catCss = cat.replace(' ', '-');
             let levels = levelMap.get(cat);
+            let selected = levels.includes(this.selectedLevel);
             return html`
         <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                data-bs-target="#${catCss}-collapse" aria-expanded="false">
+                data-bs-target="#${catCss}-collapse" aria-expanded=${selected}>
                 ${cat}
             </button>
-            <div class="collapse" id="${catCss}-collapse">
+            <div class="collapse ${selected ? "show" : ""}" id="${catCss}-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    ${levels.map(level => html`<li><a href="#" class="link-dark rounded" @click=${() => this.itemSelected(level)}>${level.name}</a></li>`)}
+                    ${levels.map(level => html`
+                        <li>
+                        <a
+                            href="#"
+                            class="link-dark rounded ${this.selectedLevel == level ? 'selected' : ''}"
+                            @click=${() => this.itemSelected(level)}
+                        >${level.name}</a></li>
+                    `)}
                 </ul>
             </div>
         </li>

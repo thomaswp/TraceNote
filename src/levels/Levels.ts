@@ -29,6 +29,16 @@ export abstract class Level {
         this.addFunctions(p);
         return p;
     }
+
+    get categoryKebab() {
+        // TODO: More robust
+        return this.category.replace(' ', '-');
+    }
+
+    get nameKebab() {
+        // TODO: More robust
+        return this.name.replace(' ', '-');
+    }
 }
 
 export const levels = [] as Level[];

@@ -129,35 +129,12 @@ export class LevelControls extends LitElement {
     override connectedCallback(): void {
         super.connectedCallback();
         Input.pressed(InputNames.Start).add(() => this.start(), this);
-        Input.pressed(InputNames.DPadLeft).add(() => this.changeLevel(-1), this);
-        Input.pressed(InputNames.DPadRight).add(() => this.changeLevel(1), this);
-        Input.pressed(InputNames.DPadUp).add(() => this.changeCategory(-1), this);
-        Input.pressed(InputNames.DPadDown).add(() => this.changeCategory(1), this);
     }
 
     override disconnectedCallback(): void {
         this.stop();
         InputEvent.removeFromAllEvents(this);
         super.disconnectedCallback();
-    }
-
-    private changeLevel(by: number) {
-        if (!this.level) return;
-        let index = levels.indexOf(this.level);
-        if (index < 0) return;
-        index += by;
-        if (index < 0 || index >= levels.length) return;
-        this.level = levels[index];
-    }
-
-    private changeCategory(by: number) {
-        if (!this.level) return;
-        let index = levelCategories.indexOf(this.level.category);
-        if (index < 0) return;
-        index += by;
-        if (index < 0 || index >= levelCategories.length) return;
-        let category = levelCategories[index];
-        this.level = levelMap.get(category)[0];
     }
 
     private playAll() {
