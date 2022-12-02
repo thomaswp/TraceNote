@@ -83,8 +83,8 @@ export class LevelControls extends LitElement {
         }
 
         const finish = () => {
-            Input.strum.remove(callback);
-            Input.pick.remove(callback);
+            Input.strum.removeAll(this);
+            Input.pick.removeAll(this);
             setTimeout(() => {
                 this.player.playSuccess();
                 this.reset();
@@ -119,8 +119,8 @@ export class LevelControls extends LitElement {
                 }
             }
         }
-        Input.strum.add(callback);
-        Input.pick.add(callback);
+        Input.strum.add(callback, this);
+        Input.pick.add(callback, this);
         checkFinished();
     }
 
@@ -134,6 +134,8 @@ export class LevelControls extends LitElement {
     }
 
     private stop() {
+        Input.strum.removeAll(this);
+        Input.pick.removeAll(this);
         this.playbackQueue = [];
         if (this.player) {
             this.player.stop();
