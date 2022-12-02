@@ -1,8 +1,8 @@
 import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Input, InputEvent, LeftStickArgs } from '../input/Input';
-import {classMap} from 'lit/directives/class-map.js';
-import {styleMap} from 'lit/directives/style-map.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import { Level, levels } from '../levels/Levels';
 import { LevelControls } from './LevelControls';
 import { StickDisplay } from './StickDisplay';
@@ -26,11 +26,11 @@ export class MainDisplay extends LitElement {
         new VariableDisplay();
 
         return html`
-    <level-menu @level-selected=${e => this.currentLevel = e.detail.level}></level-menu>
-    <div class="main-container">
-        <stick-display></stick-display>
-        <level-controls .level=${this.currentLevel}></level-controls>
-    </div>
+<stick-display></stick-display>
+<div class="main-container">
+    <level-menu @level-selected=${e=> this.currentLevel = e.detail.level}></level-menu>
+    <level-controls .level=${this.currentLevel}></level-controls>
+</div>
     `
     }
 }

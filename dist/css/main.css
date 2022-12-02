@@ -13,7 +13,13 @@
 .code-container {
     border: 1px solid #eee;
     padding: 15px;
-    margin: 5px;
+    height: 100%;
+}
+
+level-controls {
+    width: 100%;
+    display: inline-block;
+    margin-left: 20px;
 }
 
 .code-content {
@@ -56,6 +62,7 @@ html, body, main-display {
 
 .main-container {
     height: 100%;
+    display: flex;
 }
 
 .levels {
@@ -70,7 +77,7 @@ html, body, main-display {
 
 .code-content {
     display: inline-block;
-    min-width: 25%;
+    min-width: 300px;
 }
 
 .info-panel-right {
