@@ -1,4 +1,5 @@
 import { Block } from "../code/Block";
+import { ChangeListItem } from "../code/ChangeListItem";
 import { ChangeVariable } from "../code/ChangeVariable";
 import { ExecutionTrace } from "../code/ExecutionTrace";
 import { ForEachLoop } from "../code/ForEachLoop";
@@ -33,75 +34,6 @@ export abstract class Level {
 export const levels = [] as Level[];
 
 
-levels.push(new class extends Level {
-    name = "Read List";
-    category = "List Basics";
-
-    getMain(): Block {
-        return new Block()
-            .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 3])))
-            .addCommand(new Strum(new GetListItem(List1Var, 1)))
-            .addCommand(new Strum(new GetListItem(List1Var, 2)))
-            .addCommand(new Strum(new GetListItem(List1Var, 3)))
-        ;
-    }
-});
-
-levels.push(new class extends Level {
-    name = "Write to List (I)";
-    category = "List Basics";
-
-    getMain(): Block {
-        return new Block()
-            .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 1])))
-            .addCommand(new Pick(new GetListItem(List1Var, 1)))
-            .addCommand(new Pick(new GetListItem(List1Var, 2)))
-            .addCommand(new Pick(new GetListItem(List1Var, 3)))
-            .addCommand(new SetListItem(List1Var, 2, 3))
-            .addCommand(new Pick(new GetListItem(List1Var, 1)))
-            .addCommand(new Pick(new GetListItem(List1Var, 2)))
-            .addCommand(new Pick(new GetListItem(List1Var, 3)))
-            .addCommand(new SetListItem(List1Var, 2, 4))
-            .addCommand(new Pick(new GetListItem(List1Var, 1)))
-            .addCommand(new Pick(new GetListItem(List1Var, 2)))
-            .addCommand(new Pick(new GetListItem(List1Var, 3)))
-        ;
-    }
-});
-
-
-levels.push(new class extends Level {
-    name = "Write to List (II)";
-    category = "List Basics";
-
-    getMain(): Block {
-        return new Block()
-            .addCommand(new SetVariable(List1Var, new ListExpression([3, 2, 1])))
-            .addCommand(new Pick(new GetListItem(List1Var, 1)))
-            .addCommand(new Pick(new GetListItem(List1Var, 2)))
-            .addCommand(new Pick(new GetListItem(List1Var, 3)))
-            .addCommand(new SetListItem(List1Var, 1, 4))
-            .addCommand(new SetListItem(List1Var, 2, 5))
-            .addCommand(new SetListItem(List1Var, 3, 6))
-            .addCommand(new Pick(new GetListItem(List1Var, 1)))
-            .addCommand(new Pick(new GetListItem(List1Var, 2)))
-            .addCommand(new Pick(new GetListItem(List1Var, 3)))
-        ;
-    }
-});
-
-levels.push(new class extends Level {
-    name = "List Loop";
-    category = "List Basics";
-
-    getMain(): Block {
-        return new Block()
-            .addCommand(new ForEachLoop(new ListExpression([3, 2, 1]), Note1Var, new Block()
-                .addCommand(new Pick(Note1Var))
-            ))
-        ;
-    }
-});
 
 levels.push(new class extends Level {
     name = "Strum Basics";
@@ -110,8 +42,8 @@ levels.push(new class extends Level {
     getMain(): Block {
         return new Block()
             .addCommand(new Strum(1))
-            .addCommand(new Strum(1))
-            .addCommand(new Strum(1))
+            .addCommand(new Strum(4))
+            .addCommand(new Strum(5))
             .addCommand(new Strum(1))
         ;
     }
@@ -390,6 +322,98 @@ levels.push(new class extends Level {
         program.functions.push(this.BaDaDa, this.Down3, this.DaBaDa);
     }
 })
+
+
+levels.push(new class extends Level {
+    name = "Read List";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 3])))
+            .addCommand(new Strum(new GetListItem(List1Var, 1)))
+            .addCommand(new Strum(new GetListItem(List1Var, 2)))
+            .addCommand(new Strum(new GetListItem(List1Var, 3)))
+        ;
+    }
+});
+
+levels.push(new class extends Level {
+    name = "Write to List (I)";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 1])))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+            .addCommand(new SetListItem(List1Var, 2, 3))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+            .addCommand(new SetListItem(List1Var, 2, 4))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+        ;
+    }
+});
+
+
+levels.push(new class extends Level {
+    name = "Write to List (II)";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([3, 2, 1])))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+            .addCommand(new SetListItem(List1Var, 1, 4))
+            .addCommand(new SetListItem(List1Var, 2, 5))
+            .addCommand(new SetListItem(List1Var, 3, 6))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+        ;
+    }
+});
+
+levels.push(new class extends Level {
+    name = "List Loop";
+    category = "List Loops";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new ForEachLoop(new ListExpression([3, 2, 1]), Note1Var, new Block()
+                .addCommand(new Pick(Note1Var))
+            ))
+        ;
+    }
+});
+
+
+levels.push(new class extends Level {
+    name = "Changing List in a Loop";
+    category = "List Loops";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([1, 3, 5])))
+            .addCommand(new Repeat(3, new Block()
+                .addCommand(new ForEachLoop(List1Var, Note1Var, new Block()
+                    .addCommand(new Pick(Note1Var))
+                ))
+                .addCommand(new ChangeListItem(List1Var, 1, 1))
+                .addCommand(new ChangeListItem(List1Var, 2, 1))
+                .addCommand(new ChangeListItem(List1Var, 3, 1))
+            ))
+
+        ;
+    }
+});
 
 export const levelCategories = levels.map(l => l.category).filter((v, i, a) => a.indexOf(v) === i);
 export const levelMap = new Map(levelCategories.map(cat => [cat, levels.filter(l => l.category == cat)]));

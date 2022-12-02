@@ -1,7 +1,9 @@
 import { Block } from "./Block";
+import { ExpressionLike, toExpression } from "./CodeUtils";
 import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
 import { Expression } from "./Expression";
+import { LiteralType } from "./Literal";
 import { RenderNode, Style } from "./RenderNode";
 import { Variable } from "./Variable";
 
@@ -11,9 +13,9 @@ export class ForEachLoop extends Command {
     variable: Variable<number>;
     block: Block;
 
-    constructor(list: Expression<number[]>, variable: Variable<number>, block: Block) {
+    constructor(list: ExpressionLike<number[]>, variable: Variable<number>, block: Block) {
         super();
-        this.list = list;
+        this.list = toExpression(list);
         this.variable = variable;
         this.block = block;
     }
@@ -32,7 +34,7 @@ export class ForEachLoop extends Command {
 
     render(): RenderNode {
         return new RenderNode(this)
-            .addParentheticalCall('For', Style.Control, (r) => {
+            .addParentheticalCall('ForEach', Style.Control, (r) => {
                 r.addVariable(this.variable);
                 r.addText(' in ', Style.Control);
                 r.addChild(this.list);

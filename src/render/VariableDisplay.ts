@@ -55,6 +55,7 @@ export class VariableDisplay extends LitElement {
 
     private getVariable(index: number) {
         let variable = this.variables[index];
+        if (variable == null) return html``;
         let value = this.values[index];
         if (variable.type == VarCategory.Note || variable.type == VarCategory.Chord) {
             return html`<td><arrow-display .value=${value} /></td>`;

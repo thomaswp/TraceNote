@@ -1,7 +1,9 @@
 import { Block } from "./Block";
+import { ExpressionLike, toExpression } from "./CodeUtils";
 import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
 import { Expression } from "./Expression";
+import { LiteralType } from "./Literal";
 import { RenderNode } from "./RenderNode";
 
 export class Repeat extends Command {
@@ -9,9 +11,9 @@ export class Repeat extends Command {
     times: Expression<number>;
     block: Block;
 
-    constructor(times: Expression<number>, block: Block) {
+    constructor(times: ExpressionLike<number>, block: Block) {
         super();
-        this.times = times;
+        this.times = toExpression(times, LiteralType.Number);
         this.block = block;
     }
 

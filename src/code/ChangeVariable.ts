@@ -25,6 +25,7 @@ export class ChangeVariable extends Command {
 
     render(): RenderNode {
         return new RenderNode(this)
-            .addChange(this.variable, this.change);
+            .addVariable(this.variable)
+            .addChange(this.change);
     }
 }

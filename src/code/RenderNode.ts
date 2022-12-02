@@ -292,8 +292,7 @@ export class RenderNode implements Renderable {
         return this;
     }
 
-    addChange(variable: Variable<any>, change: ASTNode) {
-        this.addRenderable(new VariableLayout(variable));
+    addChange(change: ASTNode) {
         if (change instanceof Literal) {
             let amount = new RenderNode(change);
             amount.addRenderable(new RotationChangeLayout(change.value));
