@@ -2,11 +2,11 @@ import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Block } from '../code/Block';
 import { ExecutionData, ExecutionTrace, PlayChordData, PlayNoteData, RunData, UpdateVarData } from '../code/ExecutionTrace';
-import { Level } from '../levels/Levels';
+import { Level, levelCategories, levelMap, levels } from '../levels/Levels';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 import { AudioLoader } from '../audio/AudioLoader';
 import { MusicPlayer } from '../audio/MusicPlayer';
-import { Input, StrumArgs } from '../input/Input';
+import { Input, InputEvent, InputNames, StrumArgs } from '../input/Input';
 import { Program } from '../code/Program';
 import { VariableDisplay } from './VariableDisplay';
 
@@ -25,6 +25,7 @@ export class LevelControls extends LitElement {
         this._level = level;
         this.requestUpdate('level', oldValue);
     };
+    get level() { return this._level; }
 
     private _level: Level;
     private code: Program;
@@ -45,7 +46,7 @@ export class LevelControls extends LitElement {
     render() {
         return html`
     <div class="code-container">
-        <h2>${this.name}</h2>
+        <h2>${this.level.category}: ${this.name}</h2>
         <button class="btn btn-primary" @click="${(this.start)}">Start</button>
         <button class="btn btn-primary" @click="${() => this.playAll()}">Play</button>
         <div class="level-layout">
@@ -65,6 +66,7 @@ export class LevelControls extends LitElement {
     }
 
     private start() {
+        console.log("!!");
         this.reset();
         let blockingList = [] as ([ExecutionData, ExecutionData[]])[];
         let currentList = [] as ExecutionData[];
@@ -113,8 +115,8 @@ export class LevelControls extends LitElement {
                     checkFinished();
                 } else {
                     AudioLoader.loadAll().then(() => {
-                        let player = new MusicPlayer("B3");
-                        player.playSqueal();
+                        let player = new MusicPlayer("C3");
+                        player.playSqueal(data.dir);
                     });
                 }
             }
@@ -124,8 +126,38 @@ export class LevelControls extends LitElement {
         checkFinished();
     }
 
+    override connectedCallback(): void {
+        super.connectedCallback();
+        Input.pressed(InputNames.Start).add(() => this.start(), this);
+        Input.pressed(InputNames.DPadLeft).add(() => this.changeLevel(-1), this);
+        Input.pressed(InputNames.DPadRight).add(() => this.changeLevel(1), this);
+        Input.pressed(InputNames.DPadUp).add(() => this.changeCategory(-1), this);
+        Input.pressed(InputNames.DPadDown).add(() => this.changeCategory(1), this);
+    }
+
     override disconnectedCallback(): void {
         this.stop();
+        InputEvent.removeFromAllEvents(this);
+        super.disconnectedCallback();
+    }
+
+    private changeLevel(by: number) {
+        if (!this.level) return;
+        let index = levels.indexOf(this.level);
+        if (index < 0) return;
+        index += by;
+        if (index < 0 || index >= levels.length) return;
+        this.level = levels[index];
+    }
+
+    private changeCategory(by: number) {
+        if (!this.level) return;
+        let index = levelCategories.indexOf(this.level.category);
+        if (index < 0) return;
+        index += by;
+        if (index < 0 || index >= levelCategories.length) return;
+        let category = levelCategories[index];
+        this.level = levelMap.get(category)[0];
     }
 
     private playAll() {

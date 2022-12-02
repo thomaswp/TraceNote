@@ -43,6 +43,15 @@ export class InputEvent<T> {
     }
 }
 
+class PressedInputEvent extends InputEvent<void> {
+    button: InputNames;
+
+    constructor(button: InputNames) {
+        super();
+        this.button = button;
+    }
+}
+
 export interface StrumArgs {
     dir: number;
 }
@@ -61,7 +70,22 @@ function stickToNumber(value: number[]) {
     return Math.round(angleEigth) % 8 + 1
 }
 
+export enum InputNames {
+    DPadUp = 'dpadUp',
+    DPadDown = 'dpadDown',
+    DPadLeft = 'dpadLeft',
+    DPadRight = 'dpadRight',
+    A = 'A',
+    B = 'B',
+    X = 'X',
+    Y = 'Y',
+    Start = 'start',
+    Select = 'select',
+    Home = 'home',
+};
+
 export class Input {
+
 
     static strum = new InputEvent<StrumArgs>();
     static pick = new InputEvent<StrumArgs>();
@@ -70,6 +94,16 @@ export class Input {
     private static module: QueryModule;
 
     private static lastLeftStickValue = [0, 0];
+
+    private static pressedEvents = new Map<InputNames, PressedInputEvent>();
+
+    static pressed(input: InputNames) {
+        if (!this.pressedEvents.has(input)) {
+            let event = new PressedInputEvent(input);
+            this.pressedEvents.set(input, event);
+        }
+        return this.pressedEvents.get(input);
+    }
 
     static init() {
         const joymap = Joymap.createJoymap({
@@ -83,9 +117,16 @@ export class Input {
     }
 
     private static update() {
-        const aButton = this.module.getButton('A');
-        const xButton = this.module.getButton('X');
+        const aButton = this.module.getButton(InputNames.A);
+        const xButton = this.module.getButton(InputNames.X);
         const leftStick = this.module.getStick('L');
+
+        for (let event of this.pressedEvents.values()) {
+            const input = this.module.getButton(event.button)
+            if (input.pressed && input.justChanged) {
+                event.trigger();
+            }
+        }
 
         const [x, y] = leftStick.value;
         if (x != this.lastLeftStickValue[0] || y != this.lastLeftStickValue[1]) {

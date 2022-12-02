@@ -39,8 +39,9 @@ export class MusicPlayer {
 
     }
 
-    playSqueal() {
-        this.playNotes([0, 1, 2, 3, 4], 0.25);
+    playSqueal(note: number) {
+        let notes = [0, 1, 2, 3, 4].map(n => n + note);
+        this.playNotes(notes, 0.25);
     }
 
     playSuccess() {
