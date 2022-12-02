@@ -58,8 +58,12 @@ export class VariableDisplay extends LitElement {
         let value = this.values[index];
         if (variable.type == VarCategory.Note || variable.type == VarCategory.Chord) {
             return html`<td><arrow-display .value=${value} /></td>`;
-        } else {
+        } else if (variable.type == VarCategory.Bool) {
             return html`<td><boolean-display .value=${value} /></td>`;
+        } else if (variable.type == VarCategory.ListRotation) {
+            return html`<td><list-rotation-display .value=${value} /></td>`;
+        } else {
+            return html`<td>???</td>`;
         }
     }
 
@@ -82,6 +86,10 @@ export class ArrowDisplay extends LitElement {
 
         .hidden {
             visibility: hidden;
+        }
+
+        .container {
+            display: inline-block;
         }
     `
 
@@ -131,5 +139,37 @@ export class BooleanDisplay extends LitElement {
     `
     }
 }
-
 new BooleanDisplay();
+
+
+@customElement('list-rotation-display')
+export class ListRotationDisplay extends LitElement {
+
+    static styles = css`
+        .container {
+            font-family: monospace;
+            font-size: large;
+            text-align: center;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        p {
+            margin: 0;
+        }
+    `
+
+    @property()
+    value: number[] = null;
+
+    render() {
+        return html`
+    <div class="container">
+        <p class=${classMap({hidden: this.value == null})}>[${this.value?.map(v => html`<arrow-display .value=${v}></arrow-display>`)}]</p>
+    </div>
+    `
+    }
+}
+new ListRotationDisplay();

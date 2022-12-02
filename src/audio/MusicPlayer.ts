@@ -10,7 +10,6 @@ export class MusicPlayer {
     constructor(root: string, tempo: number = 4) {
         this.keyFrequency = Tone.Frequency(root);
         this.tempo = tempo;
-        console.log(Tone.now(), Tone.Transport.now());
         this.nextReady = Tone.Transport.now();
     }
 

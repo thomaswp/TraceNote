@@ -2,7 +2,7 @@ import { ASTNode } from "./ASTNode";
 import { FunctionDefinition } from "./FunctionDefinition";
 import { Variable } from "./Variable";
 
-export type VarType = number | boolean;
+export type VarType = number | boolean | number[];
 
 export class ExecutionTrace {
     data: ExecutionData[]

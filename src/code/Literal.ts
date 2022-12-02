@@ -28,6 +28,11 @@ export class Literal<T extends VarType> extends Expression<T> {
         return new RenderNode(this)
             .addLiteral(this.value, this.type);
     }
+
+    static inferType(value: VarType): LiteralType {
+        if (typeof value === 'boolean') return LiteralType.Boolean;
+        else return LiteralType.Rotation;
+    }
 }
 
 export class NumberLiteral extends Literal<number> {

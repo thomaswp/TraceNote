@@ -67,6 +67,8 @@ export class VariableLayout extends SpanRenderable {
             'green_note': '\u{1F7E2}',
             'blue_note': '\u{1F535}',
             'green_bool': '\u{1F7E9}',
+            'horizontal_list-rotation': '\u{25A4}',
+            'vertical_list-rotation': '\u{25A5}',
         }
         let key =  this.color + '_' + this.type;
         if (!map[key]) console.error('Unknown key', key);
@@ -205,7 +207,7 @@ export class RenderNode implements Renderable {
         return span.outerHTML;
     }
 
-    private addText(content: string, style: Style) {
+    addText(content: string, style: Style) {
         this.children.push(new StyledText(content, style));
         return this;
     }
@@ -246,32 +248,37 @@ export class RenderNode implements Renderable {
         }
     }
 
-    private addCallLike(text: string, style: Style, addZeroArgsParens: boolean,  args: ASTNode[]) {
+    addParentheticalCall(text: string, style: Style, middle: (node: RenderNode) => void) {
         this.addText(text, style);
-        if (!addZeroArgsParens && args.length == 0) return this;
         this.addText(' ', Style.Syntax);
         this.addText('(', Style.Syntax);
-        let first = true;
-        args.forEach(a => {
-            if (!first) this.addText(',', Style.Syntax);
-            this.addChild(a);
-            first = false;
-        });
+        middle(this);
         this.addText(')', Style.Syntax);
         return this;
     }
 
+    private addCallLike(text: string, style: Style, args: ASTNode[]) {
+        return this.addParentheticalCall(text, style, (r) => {
+            let first = true;
+            args.forEach(a => {
+                if (!first) r.addText(',', Style.Syntax);
+                r.addChild(a);
+                first = false;
+            });
+        });
+    }
+
     addControl(text: string, ...args: ASTNode[]) {
-        return this.addCallLike(text, Style.Control, false, args);
+        return this.addCallLike(text, Style.Control, args);
     }
 
     addCall(text: string, ...args: ASTNode[]) {
-        return this.addCallLike(text, Style.Call, true, args);
+        return this.addCallLike(text, Style.Call, args);
     }
 
     addFunctionDef(name: string, ...args: ASTNode[]) {
         this.addText('Function ', Style.Control)
-        return this.addCallLike(name, Style.Call, true, args);
+        return this.addCallLike(name, Style.Call, args);
     }
 
     addVariable(variable: Variable<any>): RenderNode {

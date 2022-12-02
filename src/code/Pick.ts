@@ -1,3 +1,4 @@
+import { ExpressionLike, toExpression } from "./CodeUtils";
 import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
 import { Expression } from "./Expression";
@@ -8,9 +9,9 @@ export class Pick extends Command {
     note: Expression<number>;
     duration: number;
 
-    constructor(note: Expression<number>, duration = 1) {
+    constructor(note: ExpressionLike<number>, duration = 1) {
         super();
-        this.note = note;
+        this.note = toExpression(note);
         this.duration = duration;
     }
 

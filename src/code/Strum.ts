@@ -1,3 +1,4 @@
+import { ExpressionLike, toExpression } from "./CodeUtils";
 import { Command } from "./Command";
 import { ExecutionTrace } from "./ExecutionTrace";
 import { Expression } from "./Expression";
@@ -7,9 +8,9 @@ export class Strum extends Command {
 
     root: Expression<number>;
 
-    constructor(root: Expression<number>) {
+    constructor(root: ExpressionLike<number>) {
         super();
-        this.root = root;
+        this.root = toExpression(root);
     }
 
     addToTrace(trace: ExecutionTrace) {

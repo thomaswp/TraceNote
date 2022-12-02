@@ -1,17 +1,19 @@
 import { Block } from "../code/Block";
 import { ChangeVariable } from "../code/ChangeVariable";
 import { ExecutionTrace } from "../code/ExecutionTrace";
+import { ForEachLoop } from "../code/ForEachLoop";
 import { FunctionCall } from "../code/FunctionCall";
 import { FunctionDefinition } from "../code/FunctionDefinition";
 import { GetVariable } from "../code/GetVariable";
 import { If } from "../code/If";
+import { ListExpression } from "../code/ListExpression";
 import { BooleanLiteral, Literal, LiteralType, NumberLiteral } from "../code/Literal";
 import { Pick } from "../code/Pick";
 import { Program } from "../code/Program";
 import { Repeat } from "../code/Repeat";
 import { SetVariable } from "../code/SetVariable";
 import { Strum } from "../code/Strum";
-import { BoolGreenVar, NoteBlueVar, NoteGreenVar, Variable } from "../code/Variable";
+import { Bool1Var, Note2Var, Note1Var, Variable, List1Var } from "../code/Variable";
 
 export abstract class Level {
 
@@ -28,6 +30,19 @@ export abstract class Level {
 
 export const levels = [] as Level[];
 
+levels.push(new class extends Level {
+    name = "Read List";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 3])))
+            .addCommand(new ForEachLoop(new ListExpression([3, 2, 1]), Note1Var, new Block()
+                .addCommand(new Pick(Note1Var))
+            ))
+        ;
+    }
+})
 
 levels.push(new class extends Level {
     name = "Strum Basics";
@@ -35,10 +50,10 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         return new Block()
-            .addCommand(new Strum(new Literal(1)))
-            .addCommand(new Strum(new Literal(4)))
-            .addCommand(new Strum(new Literal(5)))
-            .addCommand(new Strum(new Literal(1)))
+            .addCommand(new Strum(1))
+            .addCommand(new Strum(1))
+            .addCommand(new Strum(1))
+            .addCommand(new Strum(1))
         ;
     }
 })
@@ -88,8 +103,8 @@ levels.push(new class extends Level {
     getMain(): Block {
         let block = new Block();
         for (let note = 1; note <= 4; note++) {
-            block.addCommand(new SetVariable(NoteGreenVar, new Literal(note)));
-            block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
+            block.addCommand(new SetVariable(Note1Var, new Literal(note)));
+            block.addCommand(new Pick(new GetVariable(Note1Var)));
         }
         return block;
     }
@@ -102,11 +117,11 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         let block = new Block();
-        block.addCommand(new SetVariable(NoteGreenVar, new Literal(1)));
-        block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
+        block.addCommand(new SetVariable(Note1Var, new Literal(1)));
+        block.addCommand(new Pick(new GetVariable(Note1Var)));
         for (let note = 2; note <= 4; note++) {
-            block.addCommand(new ChangeVariable(NoteGreenVar, new Literal(1)));
-            block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
+            block.addCommand(new ChangeVariable(Note1Var, new Literal(1)));
+            block.addCommand(new Pick(new GetVariable(Note1Var)));
         }
         return block;
     }
@@ -119,14 +134,14 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         return new Block()
-            .addCommand(new SetVariable(NoteGreenVar, new Literal(1)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(2)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(2)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(3)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+            .addCommand(new SetVariable(Note1Var, new Literal(1)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(2)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(2)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(3)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
         ;
     }
 });
@@ -138,11 +153,11 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         let block = new Block();
-        block.addCommand(new SetVariable(NoteGreenVar, new Literal(4)));
-        block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
+        block.addCommand(new SetVariable(Note1Var, new Literal(4)));
+        block.addCommand(new Pick(new GetVariable(Note1Var)));
         for (let note = 2; note <= 4; note++) {
-            block.addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1)));
-            block.addCommand(new Pick(new GetVariable(NoteGreenVar)));
+            block.addCommand(new ChangeVariable(Note1Var, new Literal(-1)));
+            block.addCommand(new Pick(new GetVariable(Note1Var)));
         }
         return block;
     }
@@ -155,9 +170,9 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         let block = new Block()
-            .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(true)))
+            .addCommand(new SetVariable(Bool1Var, new BooleanLiteral(true)))
             .addCommand(new Strum(new Literal(1)))
-            .addCommand(new If(new GetVariable(BoolGreenVar),
+            .addCommand(new If(new GetVariable(Bool1Var),
                 new Block().addCommand(new Strum(new Literal(4))))
             ).addCommand(new Strum(new Literal(1)))
         return block;
@@ -171,9 +186,9 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         let block = new Block()
-            .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(false)))
+            .addCommand(new SetVariable(Bool1Var, new BooleanLiteral(false)))
             .addCommand(new Strum(new Literal(1)))
-            .addCommand(new If(new GetVariable(BoolGreenVar),
+            .addCommand(new If(new GetVariable(Bool1Var),
                 new Block().addCommand(new Strum(new Literal(4))),
                 new Block().addCommand(new Strum(new Literal(5)))
             )).addCommand(new Strum(new Literal(1)))
@@ -188,15 +203,15 @@ levels.push(new class extends Level {
 
     getMain(): Block {
         let block = new Block()
-            .addCommand(new SetVariable(BoolGreenVar, new BooleanLiteral(true)))
+            .addCommand(new SetVariable(Bool1Var, new BooleanLiteral(true)))
             .addCommand(new Repeat(new NumberLiteral(2), new Block()
                 .addCommand(new Strum(new Literal(1)))
-                .addCommand(new If(new GetVariable(BoolGreenVar),
+                .addCommand(new If(new GetVariable(Bool1Var),
                     new Block().addCommand(new Strum(new Literal(5))),
                     new Block().addCommand(new Strum(new Literal(4))),
                 )).addCommand(new Strum(new Literal(1)))
                 .addCommand(new Strum(new Literal(1)))
-                .addCommand(new ChangeVariable(BoolGreenVar, new NumberLiteral(1)))
+                .addCommand(new ChangeVariable(Bool1Var, new NumberLiteral(1)))
             ));
 
         return block;
@@ -218,11 +233,11 @@ levels.push(new class extends Level {
 
     addFunctions(program: Program): void {
         let def = new FunctionDefinition('test', [
-            NoteGreenVar,
+            Note1Var,
         ], new Block()
-            .addCommand(new Strum(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(1)))
-            .addCommand(new Strum(new GetVariable(NoteGreenVar)))
+            .addCommand(new Strum(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(1)))
+            .addCommand(new Strum(new GetVariable(Note1Var)))
         )
         program.functions.push(def);
     }
@@ -243,14 +258,14 @@ levels.push(new class extends Level {
     }
 
     override addFunctions(program: Program) {
-        program.functions.push(new FunctionDefinition(this.arp, [NoteGreenVar], new Block()
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(2)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(2)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(3)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+        program.functions.push(new FunctionDefinition(this.arp, [Note1Var], new Block()
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(2)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(2)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(3)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
         ))
     }
 });
@@ -261,40 +276,40 @@ levels.push(new class extends Level {
     category = "Tunes";
 
     BaDaDa = (() => {
-        return new FunctionDefinition('BaDaDa', [NoteGreenVar, NoteBlueVar], new Block()
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new Pick(new GetVariable(NoteBlueVar)))
-            .addCommand(new Pick(new GetVariable(NoteBlueVar)))
+        return new FunctionDefinition('BaDaDa', [Note1Var, Note2Var], new Block()
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new Pick(new GetVariable(Note2Var)))
+            .addCommand(new Pick(new GetVariable(Note2Var)))
         );
     })();
 
     Down3 = (() => {
-        return new FunctionDefinition('Down3', [NoteGreenVar], new Block()
+        return new FunctionDefinition('Down3', [Note1Var], new Block()
             .addCommand(new Repeat(new Literal(3, LiteralType.Number), new Block()
-                .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-                .addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1, LiteralType.RotationChange)))
+                .addCommand(new Pick(new GetVariable(Note1Var)))
+                .addCommand(new ChangeVariable(Note1Var, new Literal(-1, LiteralType.RotationChange)))
             ))
         );
     })();
 
     DaBaDa = (() => {
-        return new FunctionDefinition('DaBaDa', [NoteGreenVar], new Block()
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(-1, LiteralType.RotationChange)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
-            .addCommand(new ChangeVariable(NoteGreenVar, new Literal(1, LiteralType.RotationChange)))
-            .addCommand(new Pick(new GetVariable(NoteGreenVar)))
+        return new FunctionDefinition('DaBaDa', [Note1Var], new Block()
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(-1, LiteralType.RotationChange)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
+            .addCommand(new ChangeVariable(Note1Var, new Literal(1, LiteralType.RotationChange)))
+            .addCommand(new Pick(new GetVariable(Note1Var)))
         );
     })();
 
     override getMain(): Block {
         return new Block()
-            .addCommand(new SetVariable(BoolGreenVar, new Literal(false, LiteralType.Boolean)))
+            .addCommand(new SetVariable(Bool1Var, new Literal(false, LiteralType.Boolean)))
             .addCommand(new Repeat(new Literal(2, LiteralType.Number), new Block()
                 .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
                 .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(6), new Literal(2)))
                 .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
-                .addCommand(new If(new GetVariable(BoolGreenVar), new Block()
+                .addCommand(new If(new GetVariable(Bool1Var), new Block()
                     .addCommand(new Pick(new Literal(6), 2))
                     .addCommand(new Pick(new Literal(7)))
                 , new Block()
@@ -304,11 +319,11 @@ levels.push(new class extends Level {
                 ))
                 .addCommand(new FunctionCall(this.DaBaDa.name, new Literal(8)))
                 .addCommand(new FunctionCall(this.Down3.name, new Literal(5)))
-                .addCommand(new If(new GetVariable(BoolGreenVar), new Block()
+                .addCommand(new If(new GetVariable(Bool1Var), new Block()
                     .addCommand(new FunctionCall(this.BaDaDa.name, new Literal(4), new Literal(2)))
                     .addCommand(new Pick(new Literal(2), 3))
                 ))
-                .addCommand(new SetVariable(BoolGreenVar, new Literal(true, LiteralType.Boolean)))
+                .addCommand(new SetVariable(Bool1Var, new Literal(true, LiteralType.Boolean)))
             ))
     }
 

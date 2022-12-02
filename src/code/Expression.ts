@@ -1,6 +1,6 @@
-import { ASTNode } from "./ASTNode";
 import { Command } from "./Command";
-import { ExecutionTrace } from "./ExecutionTrace";
+import { ExecutionTrace, VarType } from "./ExecutionTrace";
+
 
 export abstract class Expression<T> extends Command {
 

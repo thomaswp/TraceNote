@@ -1,3 +1,4 @@
+import { ExpressionLike, toExpression } from "./CodeUtils";
 import { Command } from "./Command";
 import { ExecutionTrace, VarType } from "./ExecutionTrace";
 import { Expression } from "./Expression";
@@ -9,10 +10,10 @@ export class SetVariable<T extends VarType> extends Command {
     variable: Variable<T>;
     value: Expression<T>;
 
-    constructor(name: Variable<T>, value: Expression<T>) {
+    constructor(name: Variable<T>, value: ExpressionLike<T>) {
         super();
         this.variable = name;
-        this.value = value;
+        this.value = toExpression(value);
     }
 
     addToTrace(trace: ExecutionTrace): void {
