@@ -12,6 +12,7 @@ import { BooleanLiteral, Literal, LiteralType, NumberLiteral } from "../code/Lit
 import { Pick } from "../code/Pick";
 import { Program } from "../code/Program";
 import { Repeat } from "../code/Repeat";
+import { SetListItem } from "../code/SetListItem";
 import { SetVariable } from "../code/SetVariable";
 import { Strum } from "../code/Strum";
 import { Bool1Var, Note2Var, Note1Var, Variable, List1Var } from "../code/Variable";
@@ -31,6 +32,7 @@ export abstract class Level {
 
 export const levels = [] as Level[];
 
+
 levels.push(new class extends Level {
     name = "Read List";
     category = "List Basics";
@@ -45,6 +47,48 @@ levels.push(new class extends Level {
     }
 });
 
+levels.push(new class extends Level {
+    name = "Write to List (I)";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([1, 2, 1])))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+            .addCommand(new SetListItem(List1Var, 2, 3))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+            .addCommand(new SetListItem(List1Var, 2, 4))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+        ;
+    }
+});
+
+
+levels.push(new class extends Level {
+    name = "Write to List (II)";
+    category = "List Basics";
+
+    getMain(): Block {
+        return new Block()
+            .addCommand(new SetVariable(List1Var, new ListExpression([3, 2, 1])))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+            .addCommand(new SetListItem(List1Var, 1, 4))
+            .addCommand(new SetListItem(List1Var, 2, 5))
+            .addCommand(new SetListItem(List1Var, 3, 6))
+            .addCommand(new Pick(new GetListItem(List1Var, 1)))
+            .addCommand(new Pick(new GetListItem(List1Var, 2)))
+            .addCommand(new Pick(new GetListItem(List1Var, 3)))
+        ;
+    }
+});
 
 levels.push(new class extends Level {
     name = "List Loop";
