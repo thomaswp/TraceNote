@@ -114,6 +114,47 @@ export class Input {
         this.module = Joymap.createQueryModule({ threshold: 0.2, clampThreshold: true });
         joymap.addModule(this.module);
         joymap.start();
+
+        const keyDirMap = new Map(Object.entries({
+            'KeyW': [0 , -1],
+            'KeyA': [-1, 0],
+            'KeyS': [0, 1],
+            'KeyD': [1, 0]
+        }));
+        const keyButtonMap = new Map(Object.entries({
+            'Space': [this.strum],
+        }));
+        const downDirKeys = new Map<string, void>();
+        let dir = 0;
+        const onDirKeysChanged = () => {
+            let keys = [...downDirKeys.keys()];
+            let newDir = keys.map(k => keyDirMap.get(k))
+                .reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]);
+            // console.log(keys, newDir);
+            dir = stickToNumber(newDir);
+            this.leftStickMove.trigger({
+                dir: dir,
+                x: newDir[0],
+                y: newDir[1],
+            });
+        }
+        document.addEventListener('keydown', e => {
+            if (e.repeat) return;
+            if (keyDirMap.has(e.code)) {
+                downDirKeys.set(e.code);
+                onDirKeysChanged();
+            }
+            if (keyButtonMap.has(e.code)) {
+                keyButtonMap.get(e.code).forEach(evt => evt.trigger({dir}));
+            }
+        })
+        document.addEventListener('keyup', e => {
+            if (e.repeat) return;
+            if (keyDirMap.has(e.code)) {
+                downDirKeys.delete(e.code);
+                onDirKeysChanged();
+            }
+        })
     }
 
     private static update() {

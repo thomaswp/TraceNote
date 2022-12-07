@@ -66,7 +66,7 @@ export class LevelControls extends LitElement {
     }
 
     private start() {
-        console.log("!!");
+        this.renderRoot.querySelectorAll('button').forEach(b => b.blur());
         this.reset();
         let blockingList = [] as ([ExecutionData, ExecutionData[]])[];
         let currentList = [] as ExecutionData[];
