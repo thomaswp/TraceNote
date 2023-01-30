@@ -9,6 +9,9 @@ import { MusicPlayer } from '../audio/MusicPlayer';
 import { Input, InputEvent, InputNames, StrumArgs } from '../input/Input';
 import { Program } from '../code/Program';
 import { VariableDisplay } from './VariableDisplay';
+import { ASTNode } from '../code/ASTNode';
+import { Command } from '../code/Command';
+import { Expression } from '../code/Expression';
 
 @customElement('level-controls')
 export class LevelControls extends LitElement {
@@ -49,6 +52,7 @@ export class LevelControls extends LitElement {
     render() {
         return html`
     <div class="code-container">
+        <div class="marker hidden"></div>
         <h2>${this.level.category}: ${this.name}</h2>
         <button class="btn btn-primary" @click="${(this.start)}" ?disabled=${this.playing || this.tracing}>Start</button>
         <button class="btn btn-primary" @click="${() => this.playAll()}" ?disabled=${this.playing || this.tracing}>Play</button>
@@ -66,6 +70,7 @@ export class LevelControls extends LitElement {
         this.stop();
         this.varDisplay = this.renderRoot.querySelector('variable-display') as VariableDisplay;
         this.varDisplay.init();
+        this.renderRoot.querySelector('.marker').classList.add('hidden');
     }
 
     private start() {
@@ -188,6 +193,8 @@ export class LevelControls extends LitElement {
         this.playbackQueue = [];
         let player = this.player;
 
+        let marker = this.renderRoot.querySelector('.marker') as HTMLDivElement;
+
         let highlighted = [] as HTMLElement[];
         function clearHighlights() {
             player.whenReady(() => {
@@ -195,11 +202,20 @@ export class LevelControls extends LitElement {
                 highlighted = [];
             });
         }
-        function addHighlight(id) {
+        function addHighlight(astNode: ASTNode) {
+            let id = astNode.id;
             let node = document.getElementById(id);
             player.whenReady(() => {
                 node.classList.add('running');
                 highlighted.push(node);
+
+                if (astNode instanceof Command && !(astNode instanceof Expression)) {
+                    let top = node.offsetTop + 5;
+                    let left = node.offsetLeft - 20;
+                    marker.style.setProperty('top', top + "px");
+                    marker.style.setProperty('left', left + "px");
+                    marker.classList.remove('hidden');
+                }
             });
         }
 
@@ -214,7 +230,7 @@ export class LevelControls extends LitElement {
             }
             if (event instanceof RunData) {
                 // console.log(event.node, event.node.id);
-                addHighlight(event.node.id);
+                addHighlight(event.node);
             }
             if (event instanceof UpdateVarData) {
                 player.whenReady(() => {
