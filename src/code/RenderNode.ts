@@ -203,6 +203,8 @@ export class RenderNode implements Renderable {
         span.innerHTML = content;
         span.classList.add('code');
         span.classList.add('node');
+        // TODO: Add optional class for each type of parent
+        // e.g. so Blocks can prevent opacity passing
         span.classList.toggle('vertical', this.hasVerticalLayout());
         return span.outerHTML;
     }

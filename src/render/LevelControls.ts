@@ -30,8 +30,12 @@ export class LevelControls extends LitElement {
     };
     get level() { return this._level; }
 
+    get inPlayback() { return this.playing || this.tracing; }
+
     @state()
     private tracing = false;
+    @state()
+    private playing = false;
 
     private _level: Level;
     private code: Program;
@@ -41,7 +45,7 @@ export class LevelControls extends LitElement {
 
     private playbackQueue: ExecutionData[] = [];
     private player: MusicPlayer;
-    private playing = false;
+    private playerBusy = false;
 
     private varDisplay: VariableDisplay;
 
@@ -54,8 +58,9 @@ export class LevelControls extends LitElement {
     <div class="code-container">
         <div class="marker hidden"></div>
         <h2>${this.level.category}: ${this.name}</h2>
-        <button class="btn btn-primary" @click="${(this.start)}" ?disabled=${this.playing || this.tracing}>Start</button>
-        <button class="btn btn-primary" @click="${() => this.playAll()}" ?disabled=${this.playing || this.tracing}>Play</button>
+        <button class="btn btn-primary" @click="${this.start}" ?disabled=${this.inPlayback}>Start</button>
+        <button class="btn btn-primary" @click="${() => this.playAll()}" ?disabled=${this.inPlayback}>Play</button>
+        <button class="btn btn-secondary" @click="${() => this.reset()}" ?disabled=${!this.inPlayback}>Stop</button>
         <div class="level-layout">
             <div class="code-content">${unsafeHTML(this.codeHTML)}</div>
             <div class="info-panel-right">
@@ -71,6 +76,7 @@ export class LevelControls extends LitElement {
         this.varDisplay = this.renderRoot.querySelector('variable-display') as VariableDisplay;
         this.varDisplay.init();
         this.renderRoot.querySelector('.marker').classList.add('hidden');
+        this.renderRoot.querySelectorAll('.code').forEach(e => e.classList.remove('finished', 'running'));
     }
 
     private start() {
@@ -161,14 +167,17 @@ export class LevelControls extends LitElement {
         this.playbackQueue = [];
         this.tracing = false;
         this.playing = false;
+        this.playerBusy = false;
         if (this.player) {
             this.player.stop();
         }
     }
 
     private play(data: ExecutionData[], reset = false) {
+        this.playing = true;
         this.playbackQueue.push(...data);
-        if (this.player) {
+        if (this.player && !AudioLoader.pianoSampler.disposed) {
+            // this.player.ready();
             this.tryStartPlayback();
             if (reset) {
                 this.player.whenReady(() => this.reset());
@@ -185,10 +194,10 @@ export class LevelControls extends LitElement {
     }
 
     private tryStartPlayback() {
-        if (this.playing) return;
+        if (this.playerBusy) return;
         if (this.playbackQueue.length == 0) return;
 
-        this.playing = true;
+        this.playerBusy = true;
         let data = this.playbackQueue;
         this.playbackQueue = [];
         let player = this.player;
@@ -198,7 +207,9 @@ export class LevelControls extends LitElement {
         let highlighted = [] as HTMLElement[];
         function clearHighlights() {
             player.whenReady(() => {
-                highlighted.forEach(h => h.classList.remove('running'));
+                highlighted.forEach(h => {
+                    h.classList.remove('running');
+                });
                 highlighted = [];
             });
         }
@@ -210,6 +221,7 @@ export class LevelControls extends LitElement {
                 highlighted.push(node);
 
                 if (astNode instanceof Command && !(astNode instanceof Expression)) {
+                    node.classList.add('finished');
                     let top = node.offsetTop + 5;
                     let left = node.offsetLeft - 20;
                     marker.style.setProperty('top', top + "px");
@@ -241,7 +253,7 @@ export class LevelControls extends LitElement {
 
         player.whenReady(() => {
             clearHighlights();
-            this.playing = false;
+            this.playerBusy = false;
             this.tryStartPlayback();
         });
     }

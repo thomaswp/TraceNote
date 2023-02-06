@@ -8,7 +8,7 @@ export class AudioLoader {
     static pianoSampler: Sampler;
 
     static async loadAll() {
-        if (this.isLoaded) return;
+        if (this.isLoaded && !this.pianoSampler.disposed) return;
         await Tone.start();
 
         SampleLibrary.minify = true;

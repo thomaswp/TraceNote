@@ -6,6 +6,7 @@ export class MusicPlayer {
     keyFrequency: Tone.FrequencyClass;
     tempo;
     nextReady: number;
+    timeouts: Set<NodeJS.Timeout> = new Set();
 
     constructor(root: string, tempo: number = 4) {
         this.keyFrequency = Tone.Frequency(root);
@@ -13,20 +14,37 @@ export class MusicPlayer {
         this.nextReady = Tone.Transport.now();
     }
 
+    // ready() {
+    //     if (AudioLoader.pianoSampler.disposed) {
+    //         AudioLoader.pianoSampler.toDestination();
+    //         console.log("DEST", AudioLoader.pianoSampler.output);
+    //     }
+    // }
+
     stop() {
         // TODO: This doesn't work b/c it's not bound to the transport
         // but binding to the transport creates timing issues
-        AudioLoader.pianoSampler.releaseAll();
-        Tone.Transport.cancel();
-        Tone.Transport.stop();
-        // TODO: reset nextReady to now
+        // AudioLoader.pianoSampler.releaseAll();
+        if (AudioLoader.pianoSampler) {
+            // TODO: This is a very simple hack to stop the playback but
+            // it's a bit jarring and has sync issues with the JS callbacks
+            AudioLoader.pianoSampler.dispose();
+            // AudioLoader.pianoSampler.context.
+        }
+        this.timeouts.forEach(t => clearTimeout(t));
+        this.timeouts.clear();
     }
 
     whenReady(callback: () => void) {
         let now = Tone.now();
         let until = Math.max(0, this.nextReady - now);
         // console.log(now, until);
-        setTimeout(callback, until * 1000);
+        let t: NodeJS.Timeout;
+        t = setTimeout(() => {
+            this.timeouts.delete(t);
+            callback();
+        }, until * 1000);
+        this.timeouts.add(t);
     }
 
     chordNumberToHalfSteps(chordNumber: number) {
